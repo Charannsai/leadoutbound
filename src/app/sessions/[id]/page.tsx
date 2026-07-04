@@ -4,6 +4,7 @@ import { useState, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, useUpdateSession } from "@/hooks/use-sessions";
 import { PageHeader } from "@/components/common/page-header";
+import { Modal } from "@/components/common/modal";
 import { StatusBadge } from "@/components/common/status-badge";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
@@ -81,6 +82,7 @@ export default function SessionDetailPage({
   const [editSubject, setEditSubject] = useState("");
   const [editBody, setEditBody] = useState("");
   const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [discardLeadId, setDiscardLeadId] = useState<string | null>(null);
   
   // Button spinners
   const [isPersonalizing, setIsPersonalizing] = useState(false);
@@ -235,7 +237,10 @@ export default function SessionDetailPage({
   };
 
   const handleDiscardLead = async (leadId: string) => {
-    if (!confirm("Are you sure you want to discard this lead?")) return;
+    setDiscardLeadId(leadId);
+  };
+
+  const executeDiscardLead = async (leadId: string) => {
     try {
       const res = await fetch(`/api/leads/${leadId}`, { method: "DELETE" });
       if (res.ok) {
@@ -637,6 +642,20 @@ export default function SessionDetailPage({
           </div>
         )}
       </motion.div>
+
+      <Modal
+        isOpen={discardLeadId !== null}
+        onClose={() => setDiscardLeadId(null)}
+        onConfirm={() => {
+          if (discardLeadId) {
+            executeDiscardLead(discardLeadId);
+          }
+        }}
+        title="Discard Lead"
+        description="Are you sure you want to discard this lead? It will be removed from your campaign session."
+        confirmText="Discard"
+        isDanger={true}
+      />
     </motion.div>
   );
 }
