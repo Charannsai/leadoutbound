@@ -42,8 +42,12 @@ export async function POST(request: NextRequest) {
       leads = generateMockLeads(analyzedQuery);
     }
 
+    // Sanitize and filter leads to ensure only quality leads are stored!
+    const role = analyzedQuery?.role || "Software Engineer";
+    const verifiedLeads = sanitizeAndFilterLeads(leads, role);
+
     // Save leads to database under this session
-    const leadCreations = leads.map((lead: any) => 
+    const leadCreations = verifiedLeads.map((lead: any) => 
       prisma.lead.create({
         data: {
           sessionId,
@@ -55,7 +59,7 @@ export async function POST(request: NextRequest) {
           contactName: lead.contactName,
           contactEmail: lead.contactEmail,
           contactTitle: lead.contactTitle,
-          contactLinkedin: lead.contactLinkedin || `https://linkedin.com/company/${lead.companyName.toLowerCase().replace(/\s+/g, "")}`,
+          contactLinkedin: lead.contactLinkedin || `https://linkedin.com/company/${lead.companyName.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
           source: apifyKey ? "apify" : "mock_discovery",
           pipelineStage: "generated",
           rawData: JSON.stringify(lead)
@@ -70,11 +74,11 @@ export async function POST(request: NextRequest) {
       where: { id: sessionId },
       data: { 
         status: "qualifying",
-        totalLeads: leads.length
+        totalLeads: verifiedLeads.length
       }
     });
 
-    return NextResponse.json({ success: true, count: leads.length });
+    return NextResponse.json({ success: true, count: verifiedLeads.length });
   } catch (error) {
     console.error("Scrape API error:", error);
     return NextResponse.json({ error: "Lead discovery failed" }, { status: 500 });
@@ -220,6 +224,105 @@ function parseSearchResultsManually(results: any[], role: string) {
       contactTitle: `Recruitment Partner - ${role}`,
     };
   });
+}
+
+function sanitizeAndFilterLeads(rawLeads: any[], role: string): any[] {
+  const qualityLeads: any[] = [];
+  const genericDomains = [
+    "linkedin.com", "indeed.com", "greenhouse.io", "lever.co", 
+    "glassdoor.com", "upwork.com", "google.com", "apify.com", 
+    "weworkremotely.com", "remote.co", "flexjobs.com"
+  ];
+
+  for (const lead of rawLeads) {
+    let companyName = (lead.companyName || "").trim();
+    if (!companyName) continue;
+
+    // Filter out obviously low-quality/anonymous listings
+    const lowerName = companyName.toLowerCase();
+    if (
+      lowerName.includes("confidential") ||
+      lowerName.includes("anonymous") ||
+      lowerName.includes("hiring partner") ||
+      lowerName.includes("recruiting agency") ||
+      lowerName.includes("technical agency") ||
+      lowerName.includes("tech co") ||
+      lowerName === "unknown"
+    ) {
+      continue;
+    }
+
+    // Sanitize/Reconstruct Company Website
+    let website = (lead.companyWebsite || "").trim().toLowerCase();
+    
+    // Clean protocol prefix
+    if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
+      website = `https://${website}`;
+    }
+
+    let isGenericOrEmpty = !website || genericDomains.some(gd => website.includes(gd));
+    
+    if (isGenericOrEmpty) {
+      // Reconstruct domain from company name
+      const cleanName = companyName.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (cleanName.length > 1) {
+        website = `https://${cleanName}.com`;
+      } else {
+        continue; // Drop if we can't extract a valid company name
+      }
+    } else {
+      // Clean path, query, and anchor params from original URL
+      try {
+        const urlObj = new URL(website);
+        website = `${urlObj.protocol}//${urlObj.hostname}`;
+      } catch {
+        // If URL parsing fails, reconstruct using company name
+        const cleanName = companyName.toLowerCase().replace(/[^a-z0-9]/g, "");
+        website = `https://${cleanName}.com`;
+      }
+    }
+
+    // Extract domain part for emails (e.g. "https://company.com" -> "company.com")
+    let domain = "company.com";
+    try {
+      const urlObj = new URL(website);
+      domain = urlObj.hostname.replace("www.", "");
+    } catch {
+      domain = companyName.toLowerCase().replace(/[^a-z0-9]/g, "") + ".com";
+    }
+
+    // Ensure contact details are present and quality
+    const contactName = (lead.contactName || "").trim() || `Hiring Team`;
+    
+    // Sanitize or generate contact email to match company domain
+    let email = (lead.contactEmail || "").trim().toLowerCase();
+    const isGenericEmail = !email || email.includes("@gmail.") || email.includes("@yahoo.") || email.includes("@outlook.") || genericDomains.some(gd => email.includes(gd));
+    
+    if (isGenericEmail) {
+      // Convert name to email prefix e.g. "Jane Doe" -> "jane.doe@company.com"
+      const prefix = contactName.toLowerCase()
+        .replace(/[^a-z\s]/g, "")
+        .trim()
+        .replace(/\s+/g, ".");
+      email = prefix ? `${prefix}@${domain}` : `careers@${domain}`;
+    }
+
+    const contactTitle = (lead.contactTitle || "").trim() || `Technical Recruiter - ${role}`;
+
+    qualityLeads.push({
+      companyName,
+      companyWebsite: website,
+      companySize: lead.companySize || "50-200",
+      industry: lead.industry || "Technology",
+      location: lead.location || "Remote",
+      contactName,
+      contactEmail: email,
+      contactTitle,
+      contactLinkedin: lead.contactLinkedin || `https://linkedin.com/company/${companyName.toLowerCase().replace(/[^a-z0-9]/g, "")}`
+    });
+  }
+
+  return qualityLeads;
 }
 
 function generateMockLeads(query: any) {

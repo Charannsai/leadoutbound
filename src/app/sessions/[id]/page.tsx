@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { Modal } from "@/components/common/modal";
 import { StatusBadge } from "@/components/common/status-badge";
 import Link from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Users,
@@ -61,6 +61,7 @@ interface LeadEmail {
   status: string;
   sentAt: string | null;
   aiReasoning: string | null;
+  attachments?: string | null;
 }
 
 export default function SessionDetailPage({
@@ -81,9 +82,20 @@ export default function SessionDetailPage({
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [editSubject, setEditSubject] = useState("");
   const [editBody, setEditBody] = useState("");
+  const [selectedAttachments, setSelectedAttachments] = useState<Array<{ id: string; name: string }>>([]);
   const [isSavingEmail, setIsSavingEmail] = useState(false);
   const [discardLeadId, setDiscardLeadId] = useState<string | null>(null);
   
+  const { data: kbData } = useQuery<{ entries: any[]; files: any[] }>({
+    queryKey: ["knowledge"],
+    queryFn: async () => {
+      const res = await fetch("/api/knowledge");
+      if (!res.ok) throw new Error("Failed to fetch knowledge");
+      return res.json();
+    }
+  });
+  const kbFiles = kbData?.files || [];
+
   // Button spinners
   const [isPersonalizing, setIsPersonalizing] = useState(false);
   const [isSending, setIsSending] = useState(false);
