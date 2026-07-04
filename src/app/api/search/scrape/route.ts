@@ -102,7 +102,7 @@ async function runApifyScrape(apiKey: string, query: any) {
       body: JSON.stringify({
         queries: searchQuery,
         maxPagesPerQuery: 1,
-        resultsPerPage: 10,
+        resultsPerPage: 25,
         countryCode: "us"
       })
     }
@@ -148,7 +148,7 @@ async function runApifyScrape(apiKey: string, query: any) {
 
   const items = await itemsRes.json();
   // Filter and pick organic search results
-  const searchResults = (items[0]?.organicResults || []).slice(0, 8);
+  const searchResults = (items[0]?.organicResults || []).slice(0, 25);
   console.log(`[Apify Scrape] Discovered ${searchResults.length} organic search results for query: "${searchQuery}"`);
 
   if (searchResults.length === 0) {
