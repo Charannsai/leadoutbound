@@ -4,10 +4,12 @@ import { getGeminiClient } from "@/lib/gemini";
 import path from "node:path";
 import fs from "node:fs";
 
-import pdfParse from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 async function parsePdfText(buffer: Buffer): Promise<string> {
-  const data = await pdfParse(buffer);
+  const uint8 = new Uint8Array(buffer);
+  const parser = new PDFParse(uint8);
+  const data = await parser.getText();
   return data.text || "";
 }
 
