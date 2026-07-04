@@ -62,20 +62,21 @@
 
 /* ===== Light Theme ===== */
 :root {
+  --body-bg: #f4f4f5;
   --surface: #ffffff;
   --surface-secondary: #fafafa;
   --surface-tertiary: #f4f4f5;
-  --surface-hover: #f4f4f5;
+  --surface-hover: #e4e4e7;
   --border-color: #e4e4e7;
   --border-subtle: #f4f4f5;
   --text-primary: #09090b;
   --text-secondary: #52525b;
   --text-tertiary: #a1a1aa;
-  --text-inverse: #fafafa;
-  --sidebar-bg: #fafafa;
+  --text-inverse: #ffffff;
+  --sidebar-bg: #ffffff;
   --sidebar-border: #e4e4e7;
-  --sidebar-hover: #f4f4f5;
-  --sidebar-active: #e4e4e7;
+  --sidebar-hover: #fafafa;
+  --sidebar-active: #f4f4f5;
 }
 
 /* ===== Dark Theme ===== */
