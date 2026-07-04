@@ -158,6 +158,10 @@ const defaultTemplates = [
 ];
 
 async function main() {
+  const clientPath = path.resolve(process.cwd(), "src", "generated", "prisma", "client.ts");
+  const { PrismaClient } = await import(clientPath);
+  const prisma = new PrismaClient({ adapter });
+
   console.log("🌱 Seeding database...");
 
   // Seed templates
