@@ -230,13 +230,13 @@ export default function InboxPage() {
   return (
     <div className="w-screen h-screen flex flex-row bg-body-bg overflow-hidden select-none">
       
-      {/* Column 1: Mailboxes Sidebar List */}
-      <div className="w-56 bg-surface-secondary/40 border-r border-border flex flex-col justify-between p-4.5 shrink-0 h-full">
-        <div className="space-y-5">
+      {/* Column 1: Mailboxes Sidebar List (Frosted Glassmorphism look) */}
+      <div className="w-56 bg-gradient-to-b from-surface-secondary/40 to-surface-secondary/10 backdrop-blur-md border-r border-border flex flex-col justify-between p-4.5 shrink-0 h-full">
+        <div className="space-y-6">
           {/* Back Action */}
           <Link
             href="/"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-semibold text-text-tertiary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5 transition-all w-full"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider text-text-tertiary hover:text-text-primary hover:bg-neutral-100 dark:hover:bg-neutral-900/50 transition-all w-full shadow-sm border border-border/30 bg-surface/30"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Exit Workspace
@@ -245,7 +245,7 @@ export default function InboxPage() {
           {/* Compose trigger */}
           <button
             onClick={() => setIsComposeOpen(true)}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 text-xs font-semibold transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-xs font-semibold transition-all duration-200 shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:scale-[0.98] cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Compose
@@ -263,7 +263,7 @@ export default function InboxPage() {
               {activeFolder === "inbox" && (
                 <motion.span
                   layoutId="activeFolderBg"
-                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  className="absolute inset-0 bg-surface border border-border rounded-xl -z-10 shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -280,7 +280,7 @@ export default function InboxPage() {
               {activeFolder === "sent" && (
                 <motion.span
                   layoutId="activeFolderBg"
-                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  className="absolute inset-0 bg-surface border border-border rounded-xl -z-10 shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -297,7 +297,7 @@ export default function InboxPage() {
               {activeFolder === "drafts" && (
                 <motion.span
                   layoutId="activeFolderBg"
-                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  className="absolute inset-0 bg-surface border border-border rounded-xl -z-10 shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -314,7 +314,7 @@ export default function InboxPage() {
               {activeFolder === "trash" && (
                 <motion.span
                   layoutId="activeFolderBg"
-                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  className="absolute inset-0 bg-surface border border-border rounded-xl -z-10 shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -324,9 +324,9 @@ export default function InboxPage() {
           </div>
         </div>
 
-        {/* User connected info badge */}
-        <div className="p-3 bg-surface border border-border rounded-xl flex items-center gap-2.5 shadow-sm select-none">
-          <div className="w-7 h-7 rounded-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 flex items-center justify-center font-bold text-xs shrink-0">
+        {/* User connected info badge (Radial Gradient layout) */}
+        <div className="p-3 bg-surface border border-border rounded-2xl flex items-center gap-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] select-none">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-950 dark:from-neutral-100 dark:to-neutral-300 text-white dark:text-neutral-950 flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
             {connectedEmail.substring(0, 1).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
@@ -340,18 +340,23 @@ export default function InboxPage() {
       <div className="w-80 border-r border-border flex flex-col bg-surface shrink-0 h-full">
         {/* Search header with Refresh integrated */}
         <div className="p-3.5 border-b border-border flex items-center gap-2 bg-surface shrink-0">
-          <Search className="w-4 h-4 text-text-tertiary shrink-0 ml-1" />
-          <input
-            type="text"
-            placeholder="Search conversations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-xs text-text-primary placeholder:text-text-tertiary border-none outline-none focus:outline-none focus:ring-0"
-            style={{ border: "none", outline: "none", boxShadow: "none" }}
-          />
+          <div className="flex items-center gap-2 flex-1 bg-surface-secondary/60 rounded-xl px-3 py-1.5 border border-border/40 focus-within:border-neutral-400 dark:focus-within:border-neutral-600 transition-all duration-200">
+            <Search className="w-3.5 h-3.5 text-text-tertiary shrink-0" />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-transparent text-xs text-text-primary placeholder:text-text-tertiary border-none outline-none focus:outline-none focus:ring-0"
+              style={{ border: "none", outline: "none", boxShadow: "none" }}
+            />
+            <span className="hidden sm:inline-block text-[9px] font-bold text-text-tertiary bg-surface border border-border/80 px-1 py-0.5 rounded select-none">
+              ⌘K
+            </span>
+          </div>
           <button
             onClick={() => refetchThreads()}
-            className="p-1.5 rounded-lg hover:bg-surface-hover text-text-tertiary hover:text-text-primary transition-colors shrink-0"
+            className="p-2 rounded-xl hover:bg-surface-hover text-text-tertiary hover:text-text-primary border border-transparent hover:border-border transition-all shrink-0 cursor-pointer"
             title="Refresh inbox"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -381,19 +386,25 @@ export default function InboxPage() {
                   key={t.id}
                   onClick={() => setSelectedThreadId(t.id)}
                   className={cn(
-                    "w-full text-left p-4 transition-all duration-200 flex flex-col gap-1.5 relative border-l-2",
+                    "w-full text-left p-4 transition-all duration-200 flex flex-col gap-1.5 relative border-l-2 select-none active:scale-[0.99]",
                     isSelected
-                      ? "bg-neutral-50/70 dark:bg-neutral-900/40 border-neutral-900 dark:border-neutral-50 pl-3.5"
-                      : "hover:bg-neutral-50/50 dark:hover:bg-neutral-900/20 border-transparent"
+                      ? "bg-gradient-to-r from-neutral-100/60 to-neutral-50/10 dark:from-neutral-900/40 dark:to-neutral-900/5 border-neutral-900 dark:border-neutral-50 pl-3.5 shadow-[inset_0_1px_0_rgba(0,0,0,0.01)]"
+                      : "hover:bg-neutral-50/50 dark:hover:bg-neutral-900/10 border-transparent"
                   )}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span className={cn(
-                      "text-xs truncate max-w-[70%]",
-                      t.isUnread ? "text-text-primary font-bold" : "text-text-secondary font-medium"
-                    )}>
-                      {cleanEmailSender(t.lastSender)}
-                    </span>
+                    {/* Sender Avatar + Name block */}
+                    <div className="flex items-center gap-2 truncate max-w-[75%]">
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-neutral-200 to-neutral-300 dark:from-neutral-800 dark:to-neutral-700 flex items-center justify-center text-[9px] font-bold text-text-primary select-none shrink-0 shadow-sm">
+                        {t.lastSender.substring(0, 1).toUpperCase()}
+                      </div>
+                      <span className={cn(
+                        "text-xs truncate",
+                        t.isUnread ? "text-text-primary font-bold" : "text-text-secondary font-medium"
+                      )}>
+                        {cleanEmailSender(t.lastSender)}
+                      </span>
+                    </div>
                     <span className="text-[10px] text-text-tertiary shrink-0">
                       {formatTime(t.lastMessageDate)}
                     </span>
@@ -411,7 +422,7 @@ export default function InboxPage() {
                   </p>
 
                   {t.isUnread && (
-                    <span className="absolute top-4.5 right-4.5 w-1.5 h-1.5 bg-neutral-900 dark:bg-neutral-50 rounded-full" />
+                    <span className="absolute top-4.5 right-4.5 w-1.5 h-1.5 bg-neutral-900 dark:bg-neutral-50 rounded-full shadow-sm animate-pulse" />
                   )}
                 </button>
               );
@@ -429,31 +440,37 @@ export default function InboxPage() {
       <div className="flex-1 flex flex-col overflow-hidden bg-surface h-full">
         {selectedThreadId ? (
           isLoadingMessages ? (
-            <div className="flex-1 flex flex-col items-center justify-center space-y-3">
+            <div className="flex-1 flex flex-col items-center justify-center space-y-3 bg-surface-secondary/5">
               <RefreshCw className="w-5 h-5 text-neutral-400 animate-spin" />
               <span className="text-xs text-text-tertiary">Loading conversation...</span>
             </div>
           ) : messages && messages.length > 0 ? (
             <div className="flex-1 flex flex-col overflow-hidden h-full">
               
-              {/* Header */}
-              <div className="px-6 py-4.5 border-b border-border bg-surface-secondary/20 flex items-center justify-between shrink-0">
+              {/* Glassmorphism Header */}
+              <div className="px-6 py-4.5 border-b border-border bg-gradient-to-r from-surface-secondary/40 to-surface/10 backdrop-blur-md flex items-center justify-between shrink-0">
                 <h3 className="text-sm font-semibold text-text-primary truncate max-w-[85%]">
                   {messages[0].subject}
                 </h3>
-                <span className="text-[10px] text-text-tertiary font-medium">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-text-tertiary bg-surface-secondary border border-border/50 px-2 py-0.5 rounded-full">
                   {messages.length} message{messages.length > 1 ? "s" : ""}
                 </span>
               </div>
 
-              {/* Messages Body stack */}
-              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-                {messages.map((msg) => (
-                  <div key={msg.id} className="border-b border-border/40 pb-5 last:border-b-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-4">
+              {/* Messages Body Stack (Individual cards stack) */}
+              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 bg-gradient-to-b from-surface-secondary/5 to-surface/5">
+                {messages.map((msg, idx) => (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.18, delay: idx * 0.05 }}
+                    key={msg.id} 
+                    className="border border-border/60 dark:border-border/30 rounded-2xl bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,0.015)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.02)] transition-all duration-200"
+                  >
+                    <div className="flex items-center justify-between mb-4 border-b border-border/40 pb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-border flex items-center justify-center shrink-0 select-none">
-                          <User className="w-4 h-4 text-text-secondary" />
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-950 text-white flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-sm">
+                          {cleanEmailSender(msg.from).substring(0, 1).toUpperCase()}
                         </div>
                         <div>
                           <span className="text-xs font-semibold text-text-primary block leading-none">
@@ -464,7 +481,7 @@ export default function InboxPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-tertiary">
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-tertiary font-medium bg-surface-secondary px-2 py-1 rounded-lg border border-border/40 shadow-sm">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{formatTime(msg.date)}</span>
                       </div>
@@ -481,14 +498,14 @@ export default function InboxPage() {
 
                     {/* Attachments badges */}
                     {msg.attachments && msg.attachments.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2">
+                      <div className="mt-5 pt-4 border-t border-border/40 flex flex-wrap gap-2">
                         {msg.attachments.map((file) => (
                           <a
                             key={file.id}
                             href={`/api/inbox/attachments?messageId=${msg.id}&attachmentId=${file.id}&filename=${encodeURIComponent(file.name)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
+                            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm active:scale-[0.98]"
                           >
                             <Paperclip className="w-3.5 h-3.5 text-text-tertiary" />
                             <span className="truncate max-w-[120px]">{file.name}</span>
@@ -498,12 +515,12 @@ export default function InboxPage() {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               {/* Inline Thread Reply */}
-              <div className="border-t border-border p-4.5 bg-surface-secondary/20 shrink-0">
+              <div className="border-t border-border p-4.5 bg-gradient-to-b from-surface/20 to-surface-secondary/20 backdrop-blur-md shrink-0">
                 {replyError && (
                   <div className="mb-3 p-3 rounded-xl bg-danger-50 text-danger-600 dark:bg-danger-900/10 dark:text-danger-400 text-xs flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0" />
@@ -512,73 +529,76 @@ export default function InboxPage() {
                 )}
 
                 <form onSubmit={handleReplySubmit} className="space-y-3">
-                  <textarea
-                    placeholder="Draft a response..."
-                    rows={3}
-                    value={replyBody}
-                    onChange={(e) => setReplyBody(e.target.value)}
-                    className="w-full p-3 rounded-xl text-xs border border-border bg-surface text-text-primary placeholder:text-text-tertiary resize-none focus:outline-none focus:ring-4 focus:ring-accent-500/5 focus:border-accent-500"
-                  />
-
-                  {/* Attachment queue */}
-                  {replyFiles.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {replyFiles.map((file, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full border border-border bg-surface text-[9px] text-text-secondary font-medium"
-                        >
-                          <span className="truncate max-w-[110px]">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => setReplyFiles((prev) => prev.filter((_, i) => i !== idx))}
-                            className="text-text-tertiary hover:text-text-primary"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center">
-                    <button
-                      type="button"
-                      onClick={() => replyFileInputRef.current?.click()}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
-                    >
-                      <Paperclip className="w-3.5 h-3.5 text-text-tertiary" />
-                      Attach file
-                    </button>
-                    <input
-                      type="file"
-                      multiple
-                      ref={replyFileInputRef}
-                      onChange={(e) => {
-                        if (e.target.files) {
-                          setReplyFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
-                        }
-                      }}
-                      className="hidden"
+                  <div className="rounded-xl border border-border bg-surface shadow-sm focus-within:ring-4 focus-within:ring-accent-500/5 focus-within:border-accent-500 transition-all duration-200 p-2">
+                    <textarea
+                      placeholder="Draft a response..."
+                      rows={3}
+                      value={replyBody}
+                      onChange={(e) => setReplyBody(e.target.value)}
+                      className="w-full p-2 text-xs bg-transparent border-none outline-none resize-none text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-0 min-h-[60px]"
+                      style={{ border: "none", outline: "none", boxShadow: "none" }}
                     />
 
-                    <button
-                      type="submit"
-                      disabled={!replyBody.trim() || isSendingReply}
-                      className="flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-[10px] font-semibold transition-all shadow-sm"
-                    >
-                      {isSendingReply ? (
-                        <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Reply
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </>
-                      )}
-                    </button>
+                    {/* Attachment queue */}
+                    {replyFiles.length > 0 && (
+                      <div className="flex flex-wrap gap-2 px-2 pb-2">
+                        {replyFiles.map((file, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full border border-border bg-surface text-[9px] text-text-secondary font-semibold"
+                          >
+                            <span className="truncate max-w-[110px]">{file.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => setReplyFiles((prev) => prev.filter((_, i) => i !== idx))}
+                              className="text-text-tertiary hover:text-text-primary p-0.5"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center px-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => replyFileInputRef.current?.click()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm cursor-pointer"
+                      >
+                        <Paperclip className="w-3.5 h-3.5 text-text-tertiary" />
+                        Attach file
+                      </button>
+                      <input
+                        type="file"
+                        multiple
+                        ref={replyFileInputRef}
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            setReplyFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+                          }
+                        }}
+                        className="hidden"
+                      />
+
+                      <button
+                        type="submit"
+                        disabled={!replyBody.trim() || isSendingReply}
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-[10px] font-semibold transition-all shadow-sm cursor-pointer"
+                      >
+                        {isSendingReply ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Reply
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -590,9 +610,9 @@ export default function InboxPage() {
             </div>
           )
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-2">
-            <div className="flex items-center justify-center w-11 h-11 rounded-2xl border border-border bg-surface-secondary shadow-sm">
-              <InboxIcon className="w-4.5 h-4.5 text-text-tertiary" />
+          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-2 bg-gradient-to-b from-surface-secondary/5 to-surface/5">
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl border border-dashed border-border bg-surface shadow-sm">
+              <InboxIcon className="w-5 h-5 text-text-tertiary" />
             </div>
             <h3 className="text-xs font-semibold text-text-primary">No conversation selected</h3>
             <p className="text-[11px] text-text-tertiary max-w-[200px] leading-relaxed mx-auto">
@@ -611,14 +631,14 @@ export default function InboxPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
               transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              className="w-[500px] h-[480px] bg-surface border border-border rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden"
+              className="w-[500px] h-[480px] bg-surface border border-border rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden"
             >
               {/* Dark minimalist header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-neutral-900 text-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 select-none shrink-0">
                 <span className="text-[10px] font-bold uppercase tracking-wider">New Message</span>
                 <button
                   onClick={() => setIsComposeOpen(false)}
-                  className="text-neutral-400 hover:text-white transition-colors p-0.5"
+                  className="text-neutral-400 hover:text-white transition-colors p-0.5 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -627,8 +647,8 @@ export default function InboxPage() {
               {/* Form container */}
               <form onSubmit={handleComposeSubmit} className="flex-1 flex flex-col min-h-0 bg-surface">
                 {/* Borderless Fields */}
-                <div className="px-4 py-2 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
-                  <span className="text-text-tertiary w-12 font-semibold">To</span>
+                <div className="px-4 py-2.5 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
+                  <span className="text-text-tertiary w-12 font-semibold select-none">To</span>
                   <input
                     type="email"
                     placeholder="Recipient address..."
@@ -640,8 +660,8 @@ export default function InboxPage() {
                   />
                 </div>
 
-                <div className="px-4 py-2 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
-                  <span className="text-text-tertiary w-12 font-semibold">Subject</span>
+                <div className="px-4 py-2.5 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
+                  <span className="text-text-tertiary w-12 font-semibold select-none">Subject</span>
                   <input
                     type="text"
                     placeholder="Email title..."
