@@ -4,11 +4,10 @@ import { getGeminiClient } from "@/lib/gemini";
 import path from "node:path";
 import fs from "node:fs";
 
-// Import pdf-parse dynamically to avoid compile time issues
+import pdfParse from "pdf-parse";
+
 async function parsePdfText(buffer: Buffer): Promise<string> {
-  // @ts-ignore
-  const pdfParse = await import("pdf-parse/lib/pdf-parse.js");
-  const data = await pdfParse.default(buffer);
+  const data = await pdfParse(buffer);
   return data.text || "";
 }
 
