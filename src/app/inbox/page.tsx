@@ -252,52 +252,72 @@ export default function InboxPage() {
           </button>
 
           {/* Folders List */}
-          <div className="space-y-1.5">
+          <div className="space-y-1 relative">
             <button
               onClick={() => { setActiveFolder("inbox"); setSelectedThreadId(null); }}
               className={cn(
-                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-                activeFolder === "inbox"
-                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all relative z-10",
+                activeFolder === "inbox" ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
               )}
             >
+              {activeFolder === "inbox" && (
+                <motion.span
+                  layoutId="activeFolderBg"
+                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
               <InboxIcon className="w-4 h-4 text-text-tertiary" />
               Inbox
             </button>
             <button
               onClick={() => { setActiveFolder("sent"); setSelectedThreadId(null); }}
               className={cn(
-                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-                activeFolder === "sent"
-                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all relative z-10",
+                activeFolder === "sent" ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
               )}
             >
+              {activeFolder === "sent" && (
+                <motion.span
+                  layoutId="activeFolderBg"
+                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
               <Send className="w-4 h-4 text-text-tertiary" />
               Sent
             </button>
             <button
               onClick={() => { setActiveFolder("drafts"); setSelectedThreadId(null); }}
               className={cn(
-                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-                activeFolder === "drafts"
-                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all relative z-10",
+                activeFolder === "drafts" ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
               )}
             >
+              {activeFolder === "drafts" && (
+                <motion.span
+                  layoutId="activeFolderBg"
+                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
               <FileText className="w-4 h-4 text-text-tertiary" />
               Drafts
             </button>
             <button
               onClick={() => { setActiveFolder("trash"); setSelectedThreadId(null); }}
               className={cn(
-                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-                activeFolder === "trash"
-                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all relative z-10",
+                activeFolder === "trash" ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
               )}
             >
+              {activeFolder === "trash" && (
+                <motion.span
+                  layoutId="activeFolderBg"
+                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
               <Trash2 className="w-4 h-4 text-text-tertiary" />
               Trash
             </button>
@@ -451,7 +471,7 @@ export default function InboxPage() {
                     </div>
 
                     <div 
-                      className="text-xs text-text-secondary font-medium leading-relaxed overflow-x-auto whitespace-pre-wrap selection:bg-neutral-800/10 dark:selection:bg-neutral-100/10"
+                      className="email-body-container text-xs text-text-secondary font-medium leading-relaxed whitespace-pre-wrap selection:bg-neutral-800/10 dark:selection:bg-neutral-100/10 select-text"
                       dangerouslySetInnerHTML={{ 
                         __html: msg.body.includes("<html") || msg.body.includes("<body") || msg.body.includes("<div") 
                           ? msg.body 
