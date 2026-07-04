@@ -487,6 +487,11 @@ export default function SessionDetailPage({
                         )}
                         <span className="text-text-tertiary">·</span>
                         <span className="text-xs text-text-secondary font-medium">{lead.location}</span>
+                        {lead.applyDirect && (
+                          <span className="text-[9px] px-1.5 py-0.5 font-bold rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wide">
+                            Apply Directly
+                          </span>
+                        )}
                       </div>
                       
                       <div className="text-xs text-text-secondary">
