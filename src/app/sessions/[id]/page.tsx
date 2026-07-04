@@ -101,10 +101,12 @@ export default function SessionDetailPage({
   const [isPersonalizing, setIsPersonalizing] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
+  const isLinkedin = session?.outboundChannel === "linkedin";
+
   const tabs: { id: TabId; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: "overview", label: "Overview", icon: FileText },
     { id: "leads", label: "Leads", icon: Users },
-    { id: "emails", label: "Emails", icon: Mail },
+    { id: "emails", label: isLinkedin ? "LinkedIn Notes" : "Emails", icon: isLinkedin ? MessageSquare : Mail },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
   ];
 
