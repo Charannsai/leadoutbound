@@ -90,10 +90,10 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
 }
 
 async function finishQualification(sessionId: string) {
-  // Update session status to personalizing once qualification completes
+  // Update session status to qualifying once qualification completes
   await prisma.session.update({
     where: { id: sessionId },
-    data: { status: "personalizing" }
+    data: { status: "qualifying" }
   });
 }
 
