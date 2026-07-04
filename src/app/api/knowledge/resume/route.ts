@@ -108,8 +108,7 @@ Keep values concise but descriptive.`;
       systemPrompt
     );
 
-    const cleanJson = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
-    const entries = JSON.parse(cleanJson);
+    const entries = safeParseJson(responseText, [] as any[]);
 
     if (Array.isArray(entries)) {
       // Overwrite/clear old entries to replace with new resume details

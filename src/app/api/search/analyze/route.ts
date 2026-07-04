@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGeminiClient } from "@/lib/gemini";
+import { getGeminiClient, safeParseJson } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,9 +59,7 @@ Critical questions to resolve:
 
     try {
       const responseText = await geminiClient.generateContent(prompt, systemPrompt);
-      // Clean JSON formatting if Gemini adds markdown tags
-      const cleanJson = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanJson);
+      const parsed = safeParseJson(responseText, getMockAnalysis(query, answers));
       return NextResponse.json(parsed);
     } catch (e) {
       console.error("Gemini query analysis failed:", e);

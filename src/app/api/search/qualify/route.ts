@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getGeminiClient } from "@/lib/gemini";
+import { getGeminiClient, safeParseJson } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,26 +50,9 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
 
       try {
         const text = await geminiClient.generateContent(prompt, "You are a lead qualification assistant. Evaluate leads against recruitment/outbound search queries.");
-        const cleanJson = text.replace(/```json/gi, "").replace(/```/g, "").trim();
-        
-        // Replace all control characters (including newlines and tabs) with spaces.
-        // In JSON, spaces are valid token separators, so this makes it completely parseable without breaking syntax.
-        const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
-
-        let score = 80;
-        let reason = "Fits role criteria";
-        try {
-          const parsed = JSON.parse(sanitizedJson);
-          score = parsed.score ?? 80;
-          reason = parsed.reason ?? "Fits role criteria";
-        } catch {
-          // Regex extraction fallback if JSON parsing still fails
-          const scoreMatch = sanitizedJson.match(/"score"\s*:\s*(\d+)/i);
-          if (scoreMatch) score = parseInt(scoreMatch[1], 10);
-          
-          const reasonMatch = sanitizedJson.match(/"reason"\s*:\s*"([^"]+)"/i);
-          if (reasonMatch) reason = reasonMatch[1];
-        }
+        const parsed = safeParseJson(text, { score: 80, reason: "Fits role criteria" });
+        const score = parsed.score ?? 80;
+        const reason = parsed.reason ?? "Fits role criteria";
 
         const stage = score >= 70 ? "qualified" : "rejected";
 

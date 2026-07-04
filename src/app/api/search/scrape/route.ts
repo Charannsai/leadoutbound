@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getGeminiClient } from "@/lib/gemini";
+import { getGeminiClient, safeParseJson } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
@@ -187,14 +187,10 @@ Respond strictly with a JSON array in the following format (no markdown formatti
 ]`;
 
   const parsedText = await gemini.generateContent(parsePrompt, "Convert search listings to structured JSON.");
-  const cleanJson = parsedText.replace(/```json/gi, "").replace(/```/g, "").trim();
-  
-  // Replace all control characters (including newlines and tabs) with spaces.
-  // In JSON, spaces are valid token separators, so this makes it completely parseable without breaking syntax.
-  const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
-
   try {
-    return JSON.parse(sanitizedJson);
+    const parsed = safeParseJson(parsedText, null);
+    if (!parsed) throw new Error("Parsed content returned null");
+    return parsed;
   } catch (err) {
     console.error("Failed to parse scraped company JSON, falling back manually:", err);
     return parseSearchResultsManually(searchResults, role);
