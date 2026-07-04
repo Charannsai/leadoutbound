@@ -176,9 +176,17 @@ export default function SessionDetailPage({
     if (draft) {
       setEditSubject(draft.subject);
       setEditBody(draft.body);
+      let atts = [];
+      if (draft.attachments) {
+        try {
+          atts = JSON.parse(draft.attachments) || [];
+        } catch {}
+      }
+      setSelectedAttachments(atts);
     } else {
       setEditSubject("");
       setEditBody("");
+      setSelectedAttachments([]);
     }
   };
 
@@ -191,7 +199,11 @@ export default function SessionDetailPage({
       const res = await fetch(`/api/emails/${draft.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject: editSubject, body: editBody })
+        body: JSON.stringify({ 
+          subject: editSubject, 
+          body: editBody,
+          attachments: JSON.stringify(selectedAttachments)
+        })
       });
       if (res.ok) {
         queryClient.invalidateQueries({ queryKey: ["session", session.id] });
@@ -211,7 +223,12 @@ export default function SessionDetailPage({
       const res = await fetch(`/api/emails/${draft.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "approved" })
+        body: JSON.stringify({ 
+          status: "approved",
+          subject: editSubject,
+          body: editBody,
+          attachments: JSON.stringify(selectedAttachments)
+        })
       });
       if (res.ok) {
         queryClient.invalidateQueries({ queryKey: ["session", session.id] });
