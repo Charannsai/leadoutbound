@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Session {
-  id            String   @id @default(cuid())
-  name          String
-  searchQuery   String
-  description   String?
-  status        String   @default("draft") // draft, searching, qualifying, personalizing, reviewing, sending, completed, paused
-  templateId    String?
-  totalLeads    Int      @default(0)
-  emailsSent    Int      @default(0)
-  repliesCount  Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(cuid())
+  name            String
+  searchQuery     String
+  description     String?
+  status          String   @default("draft") // draft, searching, qualifying, personalizing, reviewing, sending, completed, paused
+  templateId      String?
+  outboundChannel String   @default("email") // email, linkedin
+  totalLeads      Int      @default(0)
+  emailsSent      Int      @default(0)
+  repliesCount    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   leads      Lead[]
   template   Template? @relation(fields: [templateId], references: [id])
@@ -39,6 +40,7 @@ model Lead {
   source          String?  // apify, manual, import
   qualificationScore Float?
   qualificationReason String?
+  applyDirect     Boolean  @default(false)
   pipelineStage   String   @default("generated") // generated, qualified, personalized, reviewed, approved, sent, replied, converted, rejected, bounced
   rawData         String?  // JSON string of all scraped data
   createdAt       DateTime @default(now())
