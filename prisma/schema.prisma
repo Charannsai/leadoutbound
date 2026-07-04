@@ -62,6 +62,7 @@ model LeadEmail {
   sentAt        DateTime?
   openedAt      DateTime?
   aiReasoning   String?  // Why AI wrote this specific email
+  attachments   String?  // JSON string of selected attachments: e.g. [{"id": "...", "name": "..."}]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
