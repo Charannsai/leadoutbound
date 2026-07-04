@@ -189,13 +189,9 @@ Respond strictly with a JSON array in the following format (no markdown formatti
   const parsedText = await gemini.generateContent(parsePrompt, "Convert search listings to structured JSON.");
   const cleanJson = parsedText.replace(/```json/gi, "").replace(/```/g, "").trim();
   
-  // Sanitize raw control characters to make JSON parsing bulletproof
-  const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, (char) => {
-    if (char === "\n") return "\\n";
-    if (char === "\r") return "\\r";
-    if (char === "\t") return "\\t";
-    return " ";
-  });
+  // Replace all control characters (including newlines and tabs) with spaces.
+  // In JSON, spaces are valid token separators, so this makes it completely parseable without breaking syntax.
+  const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
 
   try {
     return JSON.parse(sanitizedJson);
