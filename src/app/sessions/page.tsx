@@ -192,6 +192,20 @@ export default function SessionsPage() {
           <CreateSessionModal onClose={() => setShowCreateModal(false)} />
         )}
       </AnimatePresence>
+
+      <Modal
+        isOpen={deleteSessionId !== null}
+        onClose={() => setDeleteSessionId(null)}
+        onConfirm={() => {
+          if (deleteSessionId) {
+            deleteSession.mutate(deleteSessionId);
+          }
+        }}
+        title="Delete Session"
+        description="Are you sure you want to delete this outreach session? This will remove all associated lead qualification records."
+        confirmText="Delete"
+        isDanger={true}
+      />
     </div>
   );
 }
@@ -313,20 +327,6 @@ function CreateSessionModal({ onClose }: { onClose: () => void }) {
           </div>
         </form>
       </motion.div>
-
-      <Modal
-        isOpen={deleteSessionId !== null}
-        onClose={() => setDeleteSessionId(null)}
-        onConfirm={() => {
-          if (deleteSessionId) {
-            deleteSession.mutate(deleteSessionId);
-          }
-        }}
-        title="Delete Session"
-        description="Are you sure you want to delete this outreach session? This will remove all associated lead qualification records."
-        confirmText="Delete"
-        isDanger={true}
-      />
     </motion.div>
   );
 }
