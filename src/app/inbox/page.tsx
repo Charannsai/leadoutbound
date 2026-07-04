@@ -77,7 +77,7 @@ export default function InboxPage() {
   const [replyError, setReplyError] = useState("");
 
   // Fetch email account connection info (connected email address)
-  const { data: settings } = useQuery<Array<{ key: string; value: string }>>({
+  const { data: settings } = useQuery<Record<string, string>>({
     queryKey: ["settings"],
     queryFn: async () => {
       const res = await fetch("/api/settings");
@@ -86,7 +86,7 @@ export default function InboxPage() {
     }
   });
 
-  const connectedEmail = settings?.find((s) => s.key === "gmail_connected_email")?.value || "Sandbox Account";
+  const connectedEmail = settings?.gmail_connected_email || "Sandbox Account";
 
   // Fetch folder threads
   const { data: threads, isLoading: isLoadingThreads, refetch: refetchThreads } = useQuery<Thread[]>({
