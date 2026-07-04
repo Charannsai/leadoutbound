@@ -76,6 +76,44 @@ export default function SettingsPage() {
     setShowKeys((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
+  const handleConnectGmail = () => {
+    if (!form.gmail_client_id || !form.gmail_client_secret) {
+      alert("Please enter both OAuth Client ID and Client Secret first, and save settings.");
+      return;
+    }
+    const scopes = [
+      "https://www.googleapis.com/auth/gmail.send",
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ].join(" ");
+    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `response_type=code` +
+      `&client_id=${encodeURIComponent(form.gmail_client_id)}` +
+      `&redirect_uri=${encodeURIComponent(form.gmail_redirect_uri)}` +
+      `&scope=${encodeURIComponent(scopes)}` +
+      `&access_type=offline` +
+      `&prompt=consent`;
+
+    window.location.href = authUrl;
+  };
+
+  const handleDisconnectGmail = async () => {
+    if (!confirm("Are you sure you want to disconnect your Gmail account?")) return;
+    try {
+      await updateSettings.mutateAsync({
+        ...form,
+        gmail_access_token: "",
+        gmail_refresh_token: "",
+        gmail_connected_email: "",
+        gmail_token_expiry: ""
+      });
+      alert("Gmail disconnected successfully.");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="animate-pulse">
@@ -261,6 +299,38 @@ export default function SettingsPage() {
               className={cn(inputClasses, "text-text-tertiary")}
               readOnly
             />
+          </div>
+
+          <div className="pt-2">
+            {settings?.gmail_connected_email ? (
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-success-500/20 bg-success-500/5 text-xs text-text-primary">
+                <div>
+                  <span className="font-semibold block">Gmail Connected</span>
+                  <span className="text-text-secondary text-[11px] mt-0.5 block">Authorized account: {settings.gmail_connected_email}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDisconnectGmail}
+                  className="px-3 py-1.5 rounded-lg border border-danger-500/20 text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-colors font-semibold"
+                >
+                  Disconnect
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-xl border border-border bg-surface-secondary/40">
+                <div className="space-y-0.5">
+                  <span className="text-xs font-semibold text-text-primary block">Gmail Account: Disconnected</span>
+                  <span className="text-[10px] text-text-tertiary block">Enter credentials, save, and connect to enable live outreach sending.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleConnectGmail}
+                  className="px-4 py-2 shrink-0 rounded-lg text-xs font-semibold bg-accent-500 text-white hover:bg-accent-600 transition-colors"
+                >
+                  Connect Gmail Account
+                </button>
+              </div>
+            )}
           </div>
         </motion.section>
 
