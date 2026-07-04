@@ -624,6 +624,45 @@ export default function SessionDetailPage({
                             className="w-full flex-1 px-3 py-2.5 border border-border rounded-lg text-xs text-text-primary focus:outline-none focus:border-accent-500 bg-surface-secondary resize-none font-mono"
                           />
                         </div>
+
+                        {/* Attachments Section */}
+                        <div className="space-y-2 pt-2">
+                          <label className="block text-[11px] font-medium text-text-secondary uppercase">Attachments</label>
+                          {kbFiles.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {kbFiles.map((file) => {
+                                const isAttached = selectedAttachments.some(att => att.id === file.id);
+                                return (
+                                  <button
+                                    key={file.id}
+                                    type="button"
+                                    onClick={() => {
+                                      if (isAttached) {
+                                        setSelectedAttachments(prev => prev.filter(att => att.id !== file.id));
+                                      } else {
+                                        setSelectedAttachments(prev => [...prev, { id: file.id, name: file.name }]);
+                                      }
+                                    }}
+                                    className={cn(
+                                      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold border transition-all cursor-pointer select-none",
+                                      isAttached
+                                        ? "bg-accent-500/10 border-accent-500/30 text-accent-500"
+                                        : "bg-surface-secondary border-border text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                                    )}
+                                  >
+                                    <span className="text-xs">📎</span>
+                                    <span>{file.name}</span>
+                                    {isAttached && <span className="ml-1 text-[8px] bg-accent-500 text-white rounded-full w-3 h-3 flex items-center justify-center">✓</span>}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-[10px] text-text-tertiary">
+                              No files uploaded in your Knowledge Base. Go to settings or knowledge page to upload a resume/portfolio.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
