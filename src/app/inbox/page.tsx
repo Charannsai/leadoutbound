@@ -227,11 +227,11 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex flex-col">
-      {/* Dynamic Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-border pb-5 gap-4">
+    <div className="min-h-[82vh] flex flex-col">
+      {/* Client Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-5 border-b border-border gap-4 shrink-0">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary tracking-tight">Email System</h1>
+          <h1 className="text-xl font-semibold text-text-primary tracking-tight">Inbox Workspace</h1>
           <p className="text-xs text-text-secondary mt-1">
             Connected via <span className="font-semibold text-text-primary underline">{connectedEmail}</span>
           </p>
@@ -239,14 +239,14 @@ export default function InboxPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => refetchThreads()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary text-xs font-medium transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary text-xs font-semibold transition-all shadow-sm"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh
           </button>
           <button
             onClick={() => setIsComposeOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 text-xs font-semibold transition-all shadow-md"
+            className="flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 text-xs font-semibold transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Compose
@@ -254,69 +254,82 @@ export default function InboxPage() {
         </div>
       </div>
 
-      {/* Main Client Panel */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 mt-6 min-h-[580px] h-[580px]">
+      {/* Modern Desktop SPA Container Panel */}
+      <div className="flex flex-col md:flex-row border border-border bg-surface rounded-2xl overflow-hidden h-[calc(100vh-210px)] min-h-[600px] mt-6 shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
         
-        {/* Left Column: Folders Menu */}
-        <div className="md:col-span-2 flex flex-col space-y-1.5">
-          <button
-            onClick={() => { setActiveFolder("inbox"); setSelectedThreadId(null); }}
-            className={cn(
-              "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-              activeFolder === "inbox"
-                ? "bg-surface-hover text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
-            )}
-          >
-            <InboxIcon className="w-4 h-4 text-text-tertiary" />
-            Inbox
-          </button>
-          <button
-            onClick={() => { setActiveFolder("sent"); setSelectedThreadId(null); }}
-            className={cn(
-              "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-              activeFolder === "sent"
-                ? "bg-surface-hover text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
-            )}
-          >
-            <Send className="w-4 h-4 text-text-tertiary" />
-            Sent
-          </button>
-          <button
-            onClick={() => { setActiveFolder("drafts"); setSelectedThreadId(null); }}
-            className={cn(
-              "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-              activeFolder === "drafts"
-                ? "bg-surface-hover text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
-            )}
-          >
-            <FileText className="w-4 h-4 text-text-tertiary" />
-            Drafts
-          </button>
-          <button
-            onClick={() => { setActiveFolder("trash"); setSelectedThreadId(null); }}
-            className={cn(
-              "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
-              activeFolder === "trash"
-                ? "bg-surface-hover text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
-                : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
-            )}
-          >
-            <Trash2 className="w-4 h-4 text-text-tertiary" />
-            Trash
-          </button>
+        {/* Column 1: Mailboxes Sidebar List */}
+        <div className="w-full md:w-52 bg-surface-secondary/40 border-r border-border flex flex-col justify-between p-4 shrink-0">
+          <div className="space-y-1.5">
+            <button
+              onClick={() => { setActiveFolder("inbox"); setSelectedThreadId(null); }}
+              className={cn(
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
+                activeFolder === "inbox"
+                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
+                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+              )}
+            >
+              <InboxIcon className="w-4 h-4 text-text-tertiary" />
+              Inbox
+            </button>
+            <button
+              onClick={() => { setActiveFolder("sent"); setSelectedThreadId(null); }}
+              className={cn(
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
+                activeFolder === "sent"
+                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
+                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+              )}
+            >
+              <Send className="w-4 h-4 text-text-tertiary" />
+              Sent
+            </button>
+            <button
+              onClick={() => { setActiveFolder("drafts"); setSelectedThreadId(null); }}
+              className={cn(
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
+                activeFolder === "drafts"
+                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
+                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+              )}
+            >
+              <FileText className="w-4 h-4 text-text-tertiary" />
+              Drafts
+            </button>
+            <button
+              onClick={() => { setActiveFolder("trash"); setSelectedThreadId(null); }}
+              className={cn(
+                "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-left transition-all",
+                activeFolder === "trash"
+                  ? "bg-neutral-900/5 dark:bg-white/5 text-text-primary border-l-2 border-neutral-900 dark:border-neutral-50 pl-2.5"
+                  : "text-text-secondary hover:text-text-primary hover:bg-neutral-900/5 dark:hover:bg-white/5"
+              )}
+            >
+              <Trash2 className="w-4 h-4 text-text-tertiary" />
+              Trash
+            </button>
+          </div>
+
+          {/* User connected badge info card */}
+          <div className="p-3 bg-surface border border-border rounded-xl flex items-center gap-2.5 shadow-sm mt-4 select-none">
+            <div className="w-7 h-7 rounded-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 flex items-center justify-center font-bold text-xs shrink-0">
+              {connectedEmail.substring(0, 1).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-semibold text-text-primary block truncate leading-none">Charann Sai</span>
+              <span className="text-[9px] text-text-tertiary block truncate mt-1 leading-none">{connectedEmail}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Middle Column: Threads List */}
-        <div className="md:col-span-4 border border-border rounded-2xl bg-surface flex flex-col overflow-hidden h-full shadow-sm">
-          {/* Search bar inside column */}
-          <div className="p-3 border-b border-border flex items-center gap-2">
+        {/* Column 2: Thread conversations header lists */}
+        <div className="w-full md:w-80 border-r border-border flex flex-col bg-surface shrink-0 h-full">
+          {/* Internal search bar */}
+          <div className="p-3.5 border-b border-border flex items-center gap-2 bg-surface shrink-0">
             <Search className="w-4 h-4 text-text-tertiary shrink-0 ml-1" />
             <input
               type="text"
-              placeholder="Search mails..."
+              placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent text-xs text-text-primary placeholder:text-text-tertiary border-none outline-none focus:outline-none focus:ring-0"
@@ -324,17 +337,17 @@ export default function InboxPage() {
             />
           </div>
 
-          {/* Threads list stack */}
-          <div className="flex-1 overflow-y-auto divide-y divide-border">
+          {/* Scrolling thread items */}
+          <div className="flex-1 overflow-y-auto divide-y divide-border/30 bg-surface">
             {isLoadingThreads ? (
               <div className="p-4 space-y-4 animate-pulse">
                 {[1, 2, 3].map((n) => (
                   <div key={n} className="space-y-2">
                     <div className="flex justify-between">
-                      <div className="h-3 w-20 bg-surface-tertiary rounded" />
-                      <div className="h-2 w-10 bg-surface-tertiary rounded" />
+                      <div className="h-3 w-16 bg-surface-tertiary rounded" />
+                      <div className="h-2 w-8 bg-surface-tertiary rounded" />
                     </div>
-                    <div className="h-3 w-40 bg-surface-tertiary rounded" />
+                    <div className="h-3 w-36 bg-surface-tertiary rounded" />
                     <div className="h-2.5 w-full bg-surface-tertiary rounded" />
                   </div>
                 ))}
@@ -347,10 +360,10 @@ export default function InboxPage() {
                     key={t.id}
                     onClick={() => setSelectedThreadId(t.id)}
                     className={cn(
-                      "w-full text-left p-4 transition-all duration-150 flex flex-col gap-1 relative",
+                      "w-full text-left p-4 transition-all duration-200 flex flex-col gap-1.5 relative border-l-2",
                       isSelected
-                        ? "bg-neutral-50 dark:bg-neutral-900 border-l-2 border-neutral-900 dark:border-neutral-50 pl-3.5"
-                        : "hover:bg-surface-hover"
+                        ? "bg-neutral-50/70 dark:bg-neutral-900/40 border-neutral-900 dark:border-neutral-50 pl-3.5"
+                        : "hover:bg-neutral-50/50 dark:hover:bg-neutral-900/20 border-transparent"
                     )}
                   >
                     <div className="flex items-center justify-between w-full">
@@ -377,49 +390,49 @@ export default function InboxPage() {
                     </p>
 
                     {t.isUnread && (
-                      <span className="absolute top-4 right-4 w-1.5 h-1.5 bg-neutral-900 dark:bg-neutral-100 rounded-full" />
+                      <span className="absolute top-4.5 right-4.5 w-1.5 h-1.5 bg-neutral-900 dark:bg-neutral-50 rounded-full" />
                     )}
                   </button>
                 );
               })
             ) : (
               <div className="flex flex-col items-center justify-center h-48 p-4 text-center">
-                <InboxIcon className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mb-2" />
-                <p className="text-xs text-text-tertiary font-medium">No threads found in {activeFolder}.</p>
+                <InboxIcon className="w-7 h-7 text-neutral-300 dark:text-neutral-700 mb-2" />
+                <p className="text-xs text-text-tertiary font-medium">No threads in {activeFolder}.</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Column: Active Conversation thread panel */}
-        <div className="md:col-span-6 border border-border rounded-2xl bg-surface flex flex-col overflow-hidden h-full shadow-sm">
+        {/* Column 3: Active Conversation details workspace */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-surface h-full">
           {selectedThreadId ? (
             isLoadingMessages ? (
               <div className="flex-1 flex flex-col items-center justify-center space-y-3">
-                <RefreshCw className="w-6 h-6 text-neutral-400 animate-spin" />
+                <RefreshCw className="w-5 h-5 text-neutral-400 animate-spin" />
                 <span className="text-xs text-text-tertiary">Loading conversation...</span>
               </div>
             ) : messages && messages.length > 0 ? (
-              <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 flex flex-col overflow-hidden h-full">
                 
-                {/* Thread Subject Header */}
-                <div className="px-6 py-4.5 border-b border-border bg-surface-secondary shrink-0">
-                  <h3 className="text-sm font-semibold text-text-primary truncate">
+                {/* Subject Header */}
+                <div className="px-6 py-4.5 border-b border-border bg-surface-secondary/20 flex items-center justify-between shrink-0">
+                  <h3 className="text-sm font-semibold text-text-primary truncate max-w-[80%]">
                     {messages[0].subject}
                   </h3>
-                  <span className="text-[10px] text-text-tertiary mt-1 block">
-                    {messages.length} message{messages.length > 1 ? "s" : ""} in this conversation
+                  <span className="text-[10px] text-text-tertiary font-medium">
+                    {messages.length} message{messages.length > 1 ? "s" : ""}
                   </span>
                 </div>
 
-                {/* Messages Stack */}
-                <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
-                  {messages.map((msg, idx) => (
-                    <div key={msg.id} className="border-b border-border/40 pb-6 last:border-b-0 last:pb-0">
-                      {/* Sender details */}
-                      <div className="flex items-center justify-between mb-3.5">
+                {/* Conversation Body Scroll Section */}
+                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+                  {messages.map((msg) => (
+                    <div key={msg.id} className="border-b border-border/40 pb-5 last:border-b-0 last:pb-0">
+                      {/* Sender metadata details */}
+                      <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-border flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-border flex items-center justify-center shrink-0 select-none">
                             <User className="w-4 h-4 text-text-secondary" />
                           </div>
                           <div>
@@ -431,19 +444,23 @@ export default function InboxPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 text-[10px] text-text-tertiary">
+                        <div className="flex items-center gap-1.5 text-[10px] text-text-tertiary">
                           <Clock className="w-3.5 h-3.5" />
                           <span>{formatTime(msg.date)}</span>
                         </div>
                       </div>
 
-                      {/* Message Body Content (Safe render html/plain text) */}
+                      {/* Body Frame */}
                       <div 
                         className="text-xs text-text-secondary font-medium leading-relaxed overflow-x-auto whitespace-pre-wrap selection:bg-neutral-800/10 dark:selection:bg-neutral-100/10"
-                        dangerouslySetInnerHTML={{ __html: msg.body.includes("<html") || msg.body.includes("<body") || msg.body.includes("<div") ? msg.body : msg.body.replace(/\n/g, "<br/>") }}
+                        dangerouslySetInnerHTML={{ 
+                          __html: msg.body.includes("<html") || msg.body.includes("<body") || msg.body.includes("<div") 
+                            ? msg.body 
+                            : msg.body.replace(/\n/g, "<br/>") 
+                        }}
                       />
 
-                      {/* Message Attachments badges */}
+                      {/* Attachment document link buttons */}
                       {msg.attachments && msg.attachments.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-2">
                           {msg.attachments.map((file) => (
@@ -452,11 +469,11 @@ export default function InboxPage() {
                               href={`/api/inbox/attachments?messageId=${msg.id}&attachmentId=${file.id}&filename=${encodeURIComponent(file.name)}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[11px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
+                              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
                             >
                               <Paperclip className="w-3.5 h-3.5 text-text-tertiary" />
                               <span className="truncate max-w-[120px]">{file.name}</span>
-                              <span className="text-[10px] text-text-tertiary shrink-0">({formatFileSize(file.size)})</span>
+                              <span className="text-[9px] text-text-tertiary shrink-0">({formatFileSize(file.size)})</span>
                               <Download className="w-3.5 h-3.5 text-text-tertiary shrink-0 ml-1" />
                             </a>
                           ))}
@@ -466,8 +483,8 @@ export default function InboxPage() {
                   ))}
                 </div>
 
-                {/* Collapsible Inline Reply Form */}
-                <div className="border-t border-border p-4.5 bg-surface-secondary shrink-0">
+                {/* Inline Thread Reply */}
+                <div className="border-t border-border p-4.5 bg-surface-secondary/20 shrink-0">
                   {replyError && (
                     <div className="mb-3 p-3 rounded-xl bg-danger-50 text-danger-600 dark:bg-danger-900/10 dark:text-danger-400 text-xs flex items-center gap-2">
                       <AlertCircle className="w-4 h-4 shrink-0" />
@@ -477,20 +494,20 @@ export default function InboxPage() {
 
                   <form onSubmit={handleReplySubmit} className="space-y-3">
                     <textarea
-                      placeholder="Type reply..."
+                      placeholder="Draft a response..."
                       rows={3}
                       value={replyBody}
                       onChange={(e) => setReplyBody(e.target.value)}
                       className="w-full p-3 rounded-xl text-xs border border-border bg-surface text-text-primary placeholder:text-text-tertiary resize-none focus:outline-none focus:ring-4 focus:ring-accent-500/5 focus:border-accent-500"
                     />
 
-                    {/* Show files queue before reply */}
+                    {/* Show files queue before reply dispatch */}
                     {replyFiles.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {replyFiles.map((file, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full border border-border bg-surface text-[10px] text-text-secondary"
+                            className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full border border-border bg-surface text-[9px] text-text-secondary font-medium"
                           >
                             <span className="truncate max-w-[110px]">{file.name}</span>
                             <button
@@ -509,7 +526,7 @@ export default function InboxPage() {
                       <button
                         type="button"
                         onClick={() => replyFileInputRef.current?.click()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[11px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-[10px] font-semibold text-text-secondary hover:text-text-primary transition-all shadow-sm"
                       >
                         <Paperclip className="w-3.5 h-3.5 text-text-tertiary" />
                         Attach file
@@ -529,7 +546,7 @@ export default function InboxPage() {
                       <button
                         type="submit"
                         disabled={!replyBody.trim() || isSendingReply}
-                        className="flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-[11px] font-semibold transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-[10px] font-semibold transition-all shadow-sm"
                       >
                         {isSendingReply ? (
                           <>
@@ -538,7 +555,7 @@ export default function InboxPage() {
                           </>
                         ) : (
                           <>
-                            Send Reply
+                            Reply
                             <ArrowRight className="w-3.5 h-3.5" />
                           </>
                         )}
@@ -549,53 +566,54 @@ export default function InboxPage() {
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-                <HelpCircle className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mb-2" />
+                <HelpCircle className="w-7 h-7 text-neutral-300 dark:text-neutral-700 mb-2" />
                 <p className="text-xs text-text-tertiary font-medium">Failed to retrieve conversation details.</p>
               </div>
             )
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-2">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full border border-dashed border-border bg-surface-secondary">
-                <InboxIcon className="w-5 h-5 text-text-tertiary" />
+              <div className="flex items-center justify-center w-11 h-11 rounded-2xl border border-border bg-surface-secondary shadow-sm">
+                <InboxIcon className="w-4.5 h-4.5 text-text-tertiary" />
               </div>
               <h3 className="text-xs font-semibold text-text-primary">No conversation selected</h3>
               <p className="text-[11px] text-text-tertiary max-w-[200px] leading-relaxed mx-auto">
-                Pick an email thread from the mailbox directory list to inspect message context.
+                Pick an email thread from the mailbox list directory to inspect message context.
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Compose Overlay Dialog Modal */}
+      {/* Floating Compose Widget (Gmail / Superhuman style bottom-right dock) */}
       <AnimatePresence>
         {isComposeOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed bottom-6 right-6 z-50">
             <motion.div
-              initial={{ opacity: 0, scale: 0.97, y: 10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: 10 }}
-              transition={{ type: "spring", stiffness: 420, damping: 30 }}
-              className="w-full max-w-lg bg-surface border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              className="w-[500px] h-[480px] bg-surface border border-border rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden"
             >
-              {/* Modal header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-surface-secondary">
-                <span className="text-xs font-bold text-text-primary uppercase tracking-wider">New Message</span>
+              {/* Dark minimalist header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-neutral-900 text-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 select-none shrink-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider">New Message</span>
                 <button
                   onClick={() => setIsComposeOpen(false)}
-                  className="text-text-tertiary hover:text-text-primary transition-all p-1"
+                  className="text-neutral-400 hover:text-white transition-colors p-0.5"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Form fields */}
-              <form onSubmit={handleComposeSubmit} className="p-5 flex flex-col space-y-4">
-                <div className="flex items-center gap-3 border-b border-border/60 pb-2">
-                  <span className="text-[11px] font-semibold text-text-tertiary shrink-0 w-8">To</span>
+              {/* Form container */}
+              <form onSubmit={handleComposeSubmit} className="flex-1 flex flex-col min-h-0 bg-surface">
+                {/* Borderless Fields */}
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
+                  <span className="text-text-tertiary w-12 font-semibold">To</span>
                   <input
                     type="email"
-                    placeholder="Recipient email address..."
+                    placeholder="Recipient address..."
                     value={composeTo}
                     onChange={(e) => setComposeTo(e.target.value)}
                     required
@@ -604,11 +622,11 @@ export default function InboxPage() {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 border-b border-border/60 pb-2">
-                  <span className="text-[11px] font-semibold text-text-tertiary shrink-0 w-8">Subject</span>
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-border/40 text-xs shrink-0">
+                  <span className="text-text-tertiary w-12 font-semibold">Subject</span>
                   <input
                     type="text"
-                    placeholder="Email subject..."
+                    placeholder="Email title..."
                     value={composeSubject}
                     onChange={(e) => setComposeSubject(e.target.value)}
                     required
@@ -617,89 +635,89 @@ export default function InboxPage() {
                   />
                 </div>
 
+                {/* Canvas */}
                 <textarea
-                  placeholder="Draft email content..."
-                  rows={8}
+                  placeholder="Draft your message..."
                   value={composeBody}
                   onChange={(e) => setComposeBody(e.target.value)}
                   required
-                  className="w-full p-3 rounded-xl text-xs border border-border bg-surface text-text-primary placeholder:text-text-tertiary resize-none focus:outline-none focus:ring-4 focus:ring-accent-500/5 focus:border-accent-500"
+                  className="flex-1 w-full p-4 text-xs bg-transparent border-none outline-none resize-none text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-0"
+                  style={{ border: "none", outline: "none", boxShadow: "none" }}
                 />
 
-                {/* Upload attachment area */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    type="button"
-                    onClick={() => composeFileInputRef.current?.click()}
-                    className="flex items-center justify-center gap-2 w-full p-4.5 rounded-xl border border-dashed border-border bg-surface-secondary hover:bg-surface-hover text-xs font-semibold text-text-secondary hover:text-text-primary transition-all cursor-pointer"
-                  >
-                    <FileUp className="w-4 h-4 text-text-tertiary" />
-                    Attach files to message
-                  </button>
-                  <input
-                    type="file"
-                    multiple
-                    ref={composeFileInputRef}
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        setComposeFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
-                      }
-                    }}
-                    className="hidden"
-                  />
-
-                  {/* Attached files queue display */}
-                  {composeFiles.length > 0 && (
-                    <div className="max-h-[120px] overflow-y-auto space-y-2 mt-1">
-                      {composeFiles.map((file, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg border border-border bg-surface text-[10px] text-text-secondary font-medium"
+                {/* Attachments pills bar */}
+                {composeFiles.length > 0 && (
+                  <div className="px-4 py-2 flex flex-wrap gap-2 max-h-[80px] overflow-y-auto border-t border-border/30 bg-surface-secondary/20 shrink-0">
+                    {composeFiles.map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full border border-border bg-surface text-[9px] text-text-secondary font-semibold"
+                      >
+                        <Paperclip className="w-3 h-3 text-text-tertiary shrink-0" />
+                        <span className="truncate max-w-[120px]">{file.name}</span>
+                        <span className="text-text-tertiary font-medium">({formatFileSize(file.size)})</span>
+                        <button
+                          type="button"
+                          onClick={() => setComposeFiles((prev) => prev.filter((_, i) => i !== idx))}
+                          className="text-text-tertiary hover:text-text-primary p-0.5"
                         >
-                          <div className="flex items-center gap-2 truncate">
-                            <Paperclip className="w-3.5 h-3.5 text-text-tertiary shrink-0" />
-                            <span className="truncate">{file.name}</span>
-                            <span className="text-[9px] text-text-tertiary">({formatFileSize(file.size)})</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setComposeFiles((prev) => prev.filter((_, i) => i !== idx))}
-                            className="text-text-tertiary hover:text-text-primary p-0.5"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-                {/* Footer Actions */}
-                <div className="flex justify-end gap-3 pt-3 border-t border-border">
-                  <button
-                    type="button"
-                    onClick={() => setIsComposeOpen(false)}
-                    className="px-4 py-2 rounded-full border border-border text-xs font-semibold text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all cursor-pointer"
-                  >
-                    Discard
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSendingCompose}
-                    className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-semibold transition-all shadow-md cursor-pointer"
-                  >
-                    {isSendingCompose ? (
-                      <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        Send Email
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </>
-                    )}
-                  </button>
+                {/* Actions widget bar */}
+                <div className="px-4 py-3 border-t border-border bg-surface-secondary/40 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => composeFileInputRef.current?.click()}
+                      className="p-2 rounded-full border border-border bg-surface hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-all shadow-sm cursor-pointer"
+                      title="Attach documents"
+                    >
+                      <Paperclip className="w-4 h-4 text-text-tertiary" />
+                    </button>
+                    <input
+                      type="file"
+                      multiple
+                      ref={composeFileInputRef}
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          setComposeFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsComposeOpen(false)}
+                      className="px-4 py-1.5 rounded-full border border-border text-[11px] font-semibold text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all cursor-pointer"
+                    >
+                      Discard
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSendingCompose}
+                      className="flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed text-[11px] font-semibold transition-all shadow-sm cursor-pointer"
+                    >
+                      {isSendingCompose ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </form>
             </motion.div>
