@@ -47,18 +47,19 @@ export function Sidebar() {
       transition={{ duration: 0.2, ease: "easeInOut" }}
       className={cn(
         "flex flex-col h-screen sticky top-0 z-30 select-none border-r transition-all duration-200",
-        "bg-[var(--sidebar-bg)] border-[var(--sidebar-border)]"
+        "bg-neutral-50 border-neutral-200/50 dark:bg-neutral-950 dark:border-neutral-900"
       )}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5.5 h-14 border-b border-[var(--sidebar-border)]">
+      <div className="flex items-center gap-2.5 px-5.5 h-14 border-b border-neutral-200/30 dark:border-neutral-900">
         <Zap className="w-4 h-4 text-neutral-900 dark:text-neutral-50 shrink-0" />
         <AnimatePresence>
           {!collapsed && (
             <motion.span
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
               className="text-xs font-semibold tracking-wider text-neutral-900 dark:text-neutral-50 uppercase whitespace-nowrap overflow-hidden"
             >
               OutReach AI
@@ -110,7 +111,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-3 border-t border-[var(--sidebar-border)] space-y-0.5">
+      <div className="p-3 border-t border-neutral-200/30 dark:border-neutral-900 space-y-0.5">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
