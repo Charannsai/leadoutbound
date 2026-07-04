@@ -225,8 +225,7 @@ export default function SearchPage() {
 
             {/* Centered Pill Search Bar */}
             <form onSubmit={handleStartSearch} className="w-full space-y-4">
-              <div className="flex items-center gap-3 pl-5 pr-2.5 py-2.5 rounded-full border border-border bg-surface shadow-[0_4px_30px_rgba(0,0,0,0.01)] focus-within:ring-4 focus-within:ring-accent-500/5 focus-within:border-accent-500 transition-all duration-200">
-                <Sparkles className="w-4 h-4 text-text-tertiary shrink-0 animate-pulse" />
+              <div className="flex items-center gap-3 pl-6 pr-2.5 py-2.5 rounded-full border border-border bg-surface shadow-[0_4px_30px_rgba(0,0,0,0.01)] focus-within:ring-4 focus-within:ring-accent-500/5 focus-within:border-accent-500 transition-all duration-200">
                 <input
                   type="text"
                   value={query}
