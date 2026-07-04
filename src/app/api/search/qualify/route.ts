@@ -54,6 +54,27 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
         const score = parsed.score ?? 80;
         const reason = parsed.reason ?? "Fits role criteria";
 
+        const email = lead.contactEmail ? lead.contactEmail.toLowerCase().trim() : "";
+        const name = lead.contactName ? lead.contactName.toLowerCase().trim() : "";
+        
+        const isGenericEmail = !email || 
+          email.startsWith("careers@") || 
+          email.startsWith("jobs@") || 
+          email.startsWith("info@") || 
+          email.startsWith("contact@") || 
+          email.startsWith("recruitment@") || 
+          email.startsWith("hr@") || 
+          email.startsWith("hello@");
+          
+        const isGenericName = !name || 
+          name.includes("team") || 
+          name.includes("manager") || 
+          name.includes("hiring") || 
+          name.includes("recruiter") || 
+          name === "unknown" ||
+          name === "hiring team";
+
+        const applyDirect = isGenericEmail || isGenericName;
         const stage = score >= 70 ? "qualified" : "rejected";
 
         await prisma.lead.update({
@@ -61,18 +82,26 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
           data: {
             qualificationScore: score,
             qualificationReason: reason,
-            pipelineStage: stage
+            pipelineStage: stage,
+            applyDirect
           }
         });
       } catch (err) {
         console.error(`Failed to qualify lead ${lead.companyName}:`, err);
         // Fallback for single query failure
+        const email = lead.contactEmail ? lead.contactEmail.toLowerCase().trim() : "";
+        const name = lead.contactName ? lead.contactName.toLowerCase().trim() : "";
+        const isGenericEmail = !email || email.startsWith("careers@") || email.startsWith("jobs@") || email.startsWith("info@") || email.startsWith("contact@");
+        const isGenericName = !name || name.includes("team") || name.includes("manager") || name.includes("hiring") || name.includes("recruiter");
+        const applyDirect = isGenericEmail || isGenericName;
+
         await prisma.lead.update({
           where: { id: lead.id },
           data: {
             qualificationScore: 85,
             qualificationReason: "Automatically approved based on role match.",
-            pipelineStage: "qualified"
+            pipelineStage: "qualified",
+            applyDirect
           }
         });
       }
