@@ -47,11 +47,11 @@ export function Sidebar() {
       transition={{ duration: 0.2, ease: "easeInOut" }}
       className={cn(
         "flex flex-col h-screen sticky top-0 z-30 select-none border-r transition-all duration-200",
-        "bg-[var(--sidebar-bg)] border-[var(--sidebar-border)]"
+        "bg-sidebar-bg border-sidebar-border"
       )}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5.5 h-14 border-b border-[var(--sidebar-border)]">
+      <div className="flex items-center gap-2.5 px-5.5 h-14 border-b border-sidebar-border">
         <Zap className="w-4 h-4 text-text-primary shrink-0" />
         <AnimatePresence>
           {!collapsed && (
@@ -111,7 +111,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-3 border-t border-[var(--sidebar-border)] space-y-0.5">
+      <div className="p-3 border-t border-sidebar-border space-y-0.5">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}

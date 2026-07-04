@@ -59,6 +59,9 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
   --color-text-inverse: var(--text-inverse);
+  --color-body-bg: var(--body-bg);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-border: var(--sidebar-border);
 }
 
 /* ===== Light Theme ===== */
