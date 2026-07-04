@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getGeminiClient } from "@/lib/gemini";
+import { getGeminiClient, safeParseJson } from "@/lib/gemini";
 import path from "node:path";
 import fs from "node:fs";
 

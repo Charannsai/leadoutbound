@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getGeminiClient } from "@/lib/gemini";
+import { getGeminiClient, safeParseJson } from "@/lib/gemini";
 
 export async function POST(
   request: NextRequest,
@@ -105,8 +105,11 @@ Qualifications: ${lead.qualificationReason || "—"}`;
 
     try {
       const resultText = await geminiClient.generateContent(prompt, systemPrompt);
-      const cleanJson = resultText.replace(/```json/gi, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanJson);
+      const parsed = safeParseJson(resultText, {
+        subject: `Outreach to ${lead.companyName}`,
+        body: "Hello...",
+        aiReasoning: "Custom pitch generated based on company profile"
+      });
 
       const email = await prisma.leadEmail.create({
         data: {

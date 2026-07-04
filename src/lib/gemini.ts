@@ -201,6 +201,49 @@ export function createGeminiClient(apiKey: string, model?: string, provider?: st
   return new GeminiClient(apiKey, model, provider);
 }
 
+export function safeParseJson<T>(rawText: string, fallback: T): T {
+  try {
+    let jsonText = rawText.trim();
+    
+    // 1. Try to find JSON content inside markdown code blocks
+    const jsonBlockMatch = jsonText.match(/```json\s*([\s\S]*?)\s*```/i) || jsonText.match(/```\s*([\s\S]*?)\s*```/);
+    if (jsonBlockMatch) {
+      jsonText = jsonBlockMatch[1];
+    } else {
+      // Find the first '{' or '[' and the last '}' or ']'
+      const startObj = jsonText.indexOf("{");
+      const startArr = jsonText.indexOf("[");
+      const endObj = jsonText.lastIndexOf("}");
+      const endArr = jsonText.lastIndexOf("]");
+      
+      const start = (startObj !== -1 && (startArr === -1 || startObj < startArr)) ? startObj : startArr;
+      const end = (endObj !== -1 && (endArr === -1 || endObj > endArr)) ? endObj : endArr;
+      
+      if (start !== -1 && end !== -1 && end > start) {
+        jsonText = jsonText.substring(start, end + 1);
+      }
+    }
+    
+    jsonText = jsonText.trim();
+    
+    // 2. Try parsing directly
+    try {
+      return JSON.parse(jsonText);
+    } catch {
+      // 3. Fallback repair: replace raw unescaped newlines in JSON strings with literal \n
+      let repaired = jsonText.replace(/: \s*"([\s\S]*?)"\s*([,}\n\]])/g, (match, content, terminator) => {
+        const escapedContent = content.replace(/\n/g, "\\n").replace(/\r/g, "");
+        return `: "${escapedContent}"${terminator}`;
+      });
+      
+      return JSON.parse(repaired);
+    }
+  } catch (error) {
+    console.error("Failed to parse AI JSON response, returning fallback.", error);
+    return fallback;
+  }
+}
+
 export async function getGeminiClient(): Promise<GeminiClient> {
   const providerSetting = await prisma.settings.findUnique({
     where: { key: "ai_provider" },

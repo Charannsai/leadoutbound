@@ -22,12 +22,12 @@ interface PipelineLead {
 }
 
 const columns = [
-  { id: "qualified", step: "01", label: "Qualified", desc: "Discovered Leads", activeBorder: "border-slate-500", activeBg: "bg-slate-500/10", text: "text-slate-600 dark:text-slate-400" },
-  { id: "personalized", step: "02", label: "Personalized", desc: "AI Draft Ready", activeBorder: "border-blue-500", activeBg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400" },
-  { id: "approved", step: "03", label: "Approved", desc: "Outbox Queue", activeBorder: "border-violet-500", activeBg: "bg-violet-500/10", text: "text-violet-600 dark:text-violet-400" },
-  { id: "sent", step: "04", label: "Sent", desc: "Dispatched Pitch", activeBorder: "border-amber-500", activeBg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400" },
-  { id: "replied", step: "05", label: "Replied", desc: "Incoming Response", activeBorder: "border-emerald-500", activeBg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400" },
-  { id: "converted", step: "06", label: "Converted", desc: "Deal Finalized", activeBorder: "border-teal-500", activeBg: "bg-teal-500/10", text: "text-teal-600 dark:text-teal-400" }
+  { id: "qualified", step: "01", label: "Qualified", desc: "Discovered Leads", activeBorder: "border-slate-500", activeBg: "bg-slate-500/10", text: "text-slate-600 dark:text-slate-400", tagColor: "bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400" },
+  { id: "personalized", step: "02", label: "Personalized", desc: "AI Draft Ready", activeBorder: "border-blue-500", activeBg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400", tagColor: "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" },
+  { id: "approved", step: "03", label: "Approved", desc: "Outbox Queue", activeBorder: "border-violet-500", activeBg: "bg-violet-500/10", text: "text-violet-600 dark:text-violet-400", tagColor: "bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400" },
+  { id: "sent", step: "04", label: "Sent", desc: "Dispatched Pitch", activeBorder: "border-amber-500", activeBg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", tagColor: "bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400" },
+  { id: "replied", step: "05", label: "Replied", desc: "Incoming Response", activeBorder: "border-emerald-500", activeBg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", tagColor: "bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400" },
+  { id: "converted", step: "06", label: "Converted", desc: "Deal Finalized", activeBorder: "border-teal-500", activeBg: "bg-teal-500/10", text: "text-teal-600 dark:text-teal-400", tagColor: "bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-400" }
 ];
 
 export default function PipelinePage() {
