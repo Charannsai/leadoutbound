@@ -488,6 +488,28 @@ export async function sendMimeEmail({
   };
 }
 
+export interface SendEmailInput {
+  to: string;
+  subject: string;
+  body: string;
+  fromName?: string;
+  signature?: string;
+}
+
+export async function sendGmailEmail(input: SendEmailInput): Promise<{ messageId: string; threadId: string }> {
+  const fullBody = input.signature ? `${input.body}\n\n--\n${input.signature}` : input.body;
+  const result = await sendMimeEmail({
+    to: input.to,
+    subject: input.subject,
+    body: fullBody,
+    fromName: input.fromName
+  });
+  return {
+    messageId: result.id,
+    threadId: result.threadId
+  };
+}
+
 // ==========================================
 // 📂 Sandbox Mock Datasets (Gmail Connected Fallback)
 // ==========================================
