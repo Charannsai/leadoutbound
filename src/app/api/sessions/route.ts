@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, searchQuery, description, templateId } = body;
+    const { name, searchQuery, description, templateId, outboundChannel } = body;
 
     if (!name || !searchQuery) {
       return NextResponse.json(
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         searchQuery,
         description: description || null,
         templateId: templateId || null,
+        outboundChannel: outboundChannel || "email",
       },
     });
 
