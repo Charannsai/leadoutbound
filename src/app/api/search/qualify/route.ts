@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, qualifiedCount: session.leads.length });
     }
 
-    const qualificationPromises = session.leads.map(async (lead) => {
+    for (const lead of session.leads) {
       const prompt = `User criteria:
 Role: ${analyzedQuery?.role || "Software Engineer"}
 Location Preference: ${analyzedQuery?.location || "Remote Everywhere"}
@@ -77,9 +77,11 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
           }
         });
       }
-    });
 
-    await Promise.all(qualificationPromises);
+      // 1-second delay to avoid rate-limiting under the free tier
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     await finishQualification(sessionId);
 
     return NextResponse.json({ success: true, qualifiedCount: session.leads.length });

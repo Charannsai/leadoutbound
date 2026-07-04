@@ -33,18 +33,21 @@ export async function POST(
     });
 
     // Run bulk personalization in background (or resolve synchronously here for simplicity in SQLite dev context)
-    // We'll execute it synchronously to make sure it finishes before return. Since it's local sqlite, it's fast.
     const apiOrigin = request.nextUrl.origin;
-    
-    const personalizationPromises = session.leads.map(lead =>
-      fetch(`${apiOrigin}/api/leads/${lead.id}/personalize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ templateId: session.templateId })
-      }).catch(err => console.error(`Background personalization failed for lead ${lead.id}:`, err))
-    );
-
-    await Promise.all(personalizationPromises);
+    for (const lead of session.leads) {
+      try {
+        await fetch(`${apiOrigin}/api/leads/${lead.id}/personalize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ templateId: session.templateId })
+        });
+      } catch (err) {
+        console.error(`Background personalization failed for lead ${lead.id}:`, err);
+      }
+      
+      // 1-second delay to avoid rate-limiting under the free tier
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
 
     // Update status to reviewing
     await prisma.session.update({
