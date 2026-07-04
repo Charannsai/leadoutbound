@@ -172,7 +172,15 @@ Extract or generate the following fields:
 
 Respond strictly with a JSON array in the following format (no markdown formatting blocks, no prefix/suffix):
 [
-  { "companyName": "Vercel", "companyWebsite": "https://vercel.com", "location": "Remote", "industry": "Infrastructure", "contactName": "John Doe", "contactEmail": "jdoe@vercel.com", "contactTitle": "Engineering Manager" }
+  {
+    "companyName": "Extract company name from listing",
+    "companyWebsite": "https://companydomain.com",
+    "location": "Remote status",
+    "industry": "General industry",
+    "contactName": "First Last (Generate realistic name)",
+    "contactEmail": "contact@companydomain.com (Generate realistic email)",
+    "contactTitle": "Realistic hiring title (e.g. Technical Recruiter)"
+  }
 ]`;
 
   const parsedText = await gemini.generateContent(parsePrompt, "Convert search listings to structured JSON.");
