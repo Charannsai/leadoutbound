@@ -111,7 +111,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-3 border-t border-neutral-200/30 dark:border-neutral-900 space-y-0.5">
+      <div className="p-3 border-t border-[var(--sidebar-border)] space-y-0.5">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
