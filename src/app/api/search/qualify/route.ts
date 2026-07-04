@@ -52,13 +52,9 @@ Respond strictly with a JSON object in this format (no markdown blocks, no prefi
         const text = await geminiClient.generateContent(prompt, "You are a lead qualification assistant. Evaluate leads against recruitment/outbound search queries.");
         const cleanJson = text.replace(/```json/gi, "").replace(/```/g, "").trim();
         
-        // Sanitize raw control characters to make JSON parsing bulletproof
-        const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, (char) => {
-          if (char === "\n") return "\\n";
-          if (char === "\r") return "\\r";
-          if (char === "\t") return "\\t";
-          return " ";
-        });
+        // Replace all control characters (including newlines and tabs) with spaces.
+        // In JSON, spaces are valid token separators, so this makes it completely parseable without breaking syntax.
+        const sanitizedJson = cleanJson.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
 
         let score = 80;
         let reason = "Fits role criteria";
