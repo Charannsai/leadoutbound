@@ -311,18 +311,18 @@ export default function SessionDetailPage({
             <StatusBadge status={session.status} />
             
             {/* Context Actions */}
-            {session.status === "qualifying" && (
+            {(session.status === "qualifying" || session.status === "personalizing") && (
               <button
                 onClick={handlePersonalizeAll}
-                disabled={isPersonalizing || qualifiedLeads.length === 0}
+                disabled={isPersonalizing || session.status === "personalizing" || qualifiedLeads.length === 0}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 transition-colors"
               >
-                {isPersonalizing ? (
+                {isPersonalizing || session.status === "personalizing" ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
                   <Play className="w-3.5 h-3.5" />
                 )}
-                Personalize ({qualifiedLeads.length})
+                {isPersonalizing || session.status === "personalizing" ? "Personalizing..." : `Personalize (${qualifiedLeads.length})`}
               </button>
             )}
 
