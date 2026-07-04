@@ -50,6 +50,7 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [scrapeProgress, setScrapeProgress] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [outboundChannel, setOutboundChannel] = useState<"email" | "linkedin">("email");
 
   const examples = [
     "I want to apply for remote Software Engineer jobs with 2 years experience (I am from India)",
@@ -148,7 +149,8 @@ export default function SearchPage() {
             ? `${analyzedQuery.role} Outreach (${analyzedQuery.location || "Remote"})`
             : "Conversational Search Outreach",
           searchQuery: query + (answers.length > 0 ? "\n\nFollow-up Details:\n" + answers.map(a => `- ${a.question}: ${a.answer}`).join("\n") : ""),
-          description: `Discovered leads for ${analyzedQuery?.role} matching location: ${analyzedQuery?.location || "Remote"}.`
+          description: `Discovered leads for ${analyzedQuery?.role} matching location: ${analyzedQuery?.location || "Remote"}.`,
+          outboundChannel
         }),
       });
       
@@ -221,6 +223,36 @@ export default function SearchPage() {
               <p className="text-xs text-text-secondary max-w-sm">
                 Describe your target role, stack, experience, and location preferences in plain language.
               </p>
+            </div>
+
+            {/* Outbound Channel Selector Switch */}
+            <div className="flex justify-center select-none">
+              <div className="bg-surface-secondary border border-border p-1 rounded-full flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setOutboundChannel("email")}
+                  className={cn(
+                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    outboundChannel === "email"
+                      ? "bg-neutral-900 text-white dark:bg-neutral-50 dark:text-neutral-950 shadow-sm"
+                      : "text-text-secondary hover:text-text-primary"
+                  )}
+                >
+                  📧 Email Campaign
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOutboundChannel("linkedin")}
+                  className={cn(
+                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    outboundChannel === "linkedin"
+                      ? "bg-neutral-900 text-white dark:bg-neutral-50 dark:text-neutral-950 shadow-sm"
+                      : "text-text-secondary hover:text-text-primary"
+                  )}
+                >
+                  💬 LinkedIn Campaign
+                </button>
+              </div>
             </div>
 
             {/* Centered Pill Search Bar */}

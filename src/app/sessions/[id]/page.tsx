@@ -50,6 +50,7 @@ interface Lead {
   contactLinkedin: string | null;
   qualificationScore: number | null;
   qualificationReason: string | null;
+  applyDirect?: boolean;
   pipelineStage: string;
   emails: LeadEmail[];
 }
