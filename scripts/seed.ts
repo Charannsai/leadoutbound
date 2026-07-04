@@ -1,7 +1,13 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import fs from "node:fs";
 import path from "node:path";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
-const dbPath = path.join(process.cwd(), "data", "outreach.db");
+const dbDir = path.join(process.cwd(), "data");
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const dbPath = path.join(dbDir, "outreach.db");
 const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
 
 const defaultTemplates = [

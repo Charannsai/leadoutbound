@@ -5,6 +5,6 @@ export default defineConfig({
   earlyAccess: true,
   schema: path.join(__dirname, "prisma", "schema.prisma"),
   datasource: {
-    url: "file:../data/outreach.db",
+    url: "file:" + path.join(__dirname, "data", "outreach.db"),
   },
 });
