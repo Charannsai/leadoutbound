@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSettings, useUpdateSettings } from "@/hooks/use-settings";
 import { PageHeader } from "@/components/common/page-header";
+import { Modal } from "@/components/common/modal";
 import {
   Settings as SettingsIcon,
   Key,
@@ -36,6 +37,7 @@ export default function SettingsPage() {
   const updateSettings = useUpdateSettings();
   const { theme, setTheme } = useTheme();
   const [saved, setSaved] = useState(false);
+  const [modalType, setModalType] = useState<"client_id_error" | "confirm_disconnect" | "disconnect_success" | null>(null);
 
   const [form, setForm] = useState({
     ai_provider: "gemini",
@@ -80,7 +82,7 @@ export default function SettingsPage() {
 
   const handleConnectGmail = () => {
     if (!form.gmail_client_id || !form.gmail_client_secret) {
-      alert("Please enter both OAuth Client ID and Client Secret first, and save settings.");
+      setModalType("client_id_error");
       return;
     }
     const scopes = [
@@ -101,7 +103,10 @@ export default function SettingsPage() {
   };
 
   const handleDisconnectGmail = async () => {
-    if (!confirm("Are you sure you want to disconnect your Gmail account?")) return;
+    setModalType("confirm_disconnect");
+  };
+
+  const executeDisconnectGmail = async () => {
     try {
       await updateSettings.mutateAsync({
         ...form,
@@ -110,7 +115,7 @@ export default function SettingsPage() {
         gmail_connected_email: "",
         gmail_token_expiry: ""
       });
-      alert("Gmail disconnected successfully.");
+      setModalType("disconnect_success");
     } catch (err) {
       console.error(err);
     }
@@ -464,6 +469,36 @@ export default function SettingsPage() {
           </div>
         </motion.section>
       </div>
+
+      <Modal
+        isOpen={modalType === "client_id_error"}
+        onClose={() => setModalType(null)}
+        onConfirm={() => setModalType(null)}
+        title="Configuration Required"
+        description="Please enter both your Google OAuth Client ID and Client Secret first, and save settings, before attempting to connect Gmail."
+        confirmText="OK"
+        cancelText="Cancel"
+      />
+
+      <Modal
+        isOpen={modalType === "confirm_disconnect"}
+        onClose={() => setModalType(null)}
+        onConfirm={executeDisconnectGmail}
+        title="Disconnect Gmail"
+        description="Are you sure you want to disconnect your Gmail account? This will log you out of your outbound email service."
+        confirmText="Disconnect"
+        isDanger={true}
+      />
+
+      <Modal
+        isOpen={modalType === "disconnect_success"}
+        onClose={() => setModalType(null)}
+        onConfirm={() => setModalType(null)}
+        title="Account Disconnected"
+        description="Gmail has been successfully disconnected from your Outreach workspace settings."
+        confirmText="OK"
+        cancelText="Close"
+      />
     </motion.div>
   );
 }
