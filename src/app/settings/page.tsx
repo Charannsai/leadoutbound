@@ -296,8 +296,8 @@ export default function SettingsPage() {
               type="text"
               value={form.gmail_redirect_uri}
               onChange={(e) => updateField("gmail_redirect_uri", e.target.value)}
-              className={cn(inputClasses, "text-text-tertiary")}
-              readOnly
+              className={inputClasses}
+              placeholder="e.g. http://localhost:3000/api/auth/google/callback"
             />
           </div>
 
