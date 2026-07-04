@@ -1,16 +1,14 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import fs from "node:fs";
 import path from "node:path";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
-const dbPath = path.join(process.cwd(), "data", "outreach.db");
-const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
-
-// Dynamic import to resolve from the correct path
-async function getSeedClient() {
-  const { PrismaClient } = await import(
-    path.join(process.cwd(), "src", "generated", "prisma", "client.ts")
-  );
-  return new PrismaClient({ adapter });
+const dbDir = path.join(process.cwd(), "data");
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
 }
+
+const dbPath = path.join(dbDir, "outreach.db");
+const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
 
 const defaultTemplates = [
   {
@@ -165,7 +163,15 @@ const defaultTemplates = [
   },
 ];
 
+import { pathToFileURL } from "node:url";
+
+let prisma: any;
+
 async function main() {
+  const clientPath = path.resolve(process.cwd(), "src", "generated", "prisma", "client.ts");
+  const { PrismaClient } = await import(pathToFileURL(clientPath).href);
+  prisma = new PrismaClient({ adapter });
+
   console.log("🌱 Seeding database...");
 
   // Seed templates
@@ -203,5 +209,7 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    if (prisma) {
+      await prisma.$disconnect();
+    }
   });
