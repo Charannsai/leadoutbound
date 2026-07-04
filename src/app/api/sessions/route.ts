@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Trigger Next.js compilation cache reload following Prisma generation
     const session = await prisma.session.create({
       data: {
         name,
