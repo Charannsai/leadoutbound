@@ -151,43 +151,34 @@ export async function listGmailThreads(
   try {
     const accessToken = await getValidAccessToken();
 
-    // Map folders to standard Gmail API query parameters
-    let q = "";
-    if (folder === "inbox") {
-      q = "label:INBOX";
-    } else if (folder === "sent") {
-      q = "label:SENT";
-    } else if (folder === "drafts") {
-      q = "label:DRAFT";
-    } else if (folder === "trash") {
-      q = "label:TRASH";
+    // 1. Fetch tracked outreach thread IDs from local Prisma database
+    const [dbEmails, dbReplies] = await Promise.all([
+      prisma.leadEmail.findMany({
+        where: { gmailThreadId: { not: null } },
+        select: { gmailThreadId: true }
+      }),
+      prisma.reply.findMany({
+        where: { gmailThreadId: { not: null } },
+        select: { gmailThreadId: true }
+      })
+    ]);
+
+    const trackedThreadIds = Array.from(new Set([
+      ...dbEmails.map((e) => e.gmailThreadId),
+      ...dbReplies.map((r) => r.gmailThreadId)
+    ])).filter(Boolean) as string[];
+
+    if (trackedThreadIds.length === 0) {
+      return [];
     }
 
-    if (search) {
-      q += ` ${search}`;
-    }
-
-    const listUrl = `https://gmail.googleapis.com/gmail/v1/users/me/threads?maxResults=25&q=${encodeURIComponent(
-      q
-    )}`;
-
-    const res = await fetch(listUrl, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    if (!res.ok) {
-      throw new Error(`Gmail List Threads API error: ${await res.text()}`);
-    }
-
-    const listData = await res.json();
-    const threads = listData.threads || [];
     const threadList: GmailThreadInfo[] = [];
 
-    // Batch fetch minimal thread details to construct header list
-    for (const t of threads) {
+    // 2. Fetch details for each tracked outreach thread directly to ensure no irrelevant personal emails bleed in
+    for (const threadId of trackedThreadIds) {
       try {
         const threadDetails = await fetch(
-          `https://gmail.googleapis.com/gmail/v1/users/me/threads/${t.id}?format=minimal`,
+          `https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}?format=minimal`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
 
@@ -196,7 +187,24 @@ export async function listGmailThreads(
         const messages = details.messages || [];
         if (messages.length === 0) continue;
 
-        // Parse last message to resolve date and snippet
+        // Check labels to categorize message under correct folders
+        const messageLabels = messages.flatMap((m: any) => m.labelIds || []);
+        let matchesFolder = false;
+
+        if (folder === "inbox") {
+          matchesFolder = messageLabels.includes("INBOX");
+        } else if (folder === "sent") {
+          matchesFolder = messageLabels.includes("SENT");
+        } else if (folder === "drafts") {
+          matchesFolder = messageLabels.includes("DRAFT");
+        } else if (folder === "trash") {
+          matchesFolder = messageLabels.includes("TRASH");
+        } else {
+          matchesFolder = true;
+        }
+
+        if (!matchesFolder) continue;
+
         const lastMsg = messages[messages.length - 1];
         const firstMsg = messages[0];
 
@@ -205,16 +213,24 @@ export async function listGmailThreads(
         const fromHeader = lastMsg.payload?.headers?.find((h: any) => h.name.toLowerCase() === "from")?.value || "Unknown";
         const lastSender = fromHeader.split("<")[0]?.trim() || fromHeader;
         
-        // Resolve date header
         const dateHeader = lastMsg.payload?.headers?.find((h: any) => h.name.toLowerCase() === "date")?.value || "";
         const dateParsed = dateHeader ? new Date(dateHeader).toISOString() : new Date().toISOString();
 
-        // Check if any message in thread contains "UNREAD" label
         const isUnread = messages.some((m: any) => m.labelIds?.includes("UNREAD"));
 
+        // Match local search query if provided
+        if (search) {
+          const s = search.toLowerCase();
+          const matchesSearch = 
+            subject.toLowerCase().includes(s) || 
+            lastSender.toLowerCase().includes(s) || 
+            (lastMsg.snippet || "").toLowerCase().includes(s);
+          if (!matchesSearch) continue;
+        }
+
         threadList.push({
-          id: t.id,
-          snippet: t.snippet || lastMsg.snippet || "",
+          id: threadId,
+          snippet: lastMsg.snippet || "",
           messagesCount: messages.length,
           lastMessageDate: dateParsed,
           lastSender,
@@ -222,7 +238,7 @@ export async function listGmailThreads(
           isUnread
         });
       } catch (err) {
-        console.error(`Failed to parse thread header ${t.id}:`, err);
+        console.error(`Failed to fetch/parse thread ${threadId}:`, err);
       }
     }
 
@@ -230,7 +246,7 @@ export async function listGmailThreads(
       (a, b) => new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime()
     );
   } catch (err) {
-    console.error("Failed to fetch live Gmail threads, falling back to mock:", err);
+    console.error("Failed to fetch live Gmail threads, falling back:", err);
     return getMockThreads(folder, search);
   }
 }
