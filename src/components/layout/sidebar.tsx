@@ -46,22 +46,20 @@ export function Sidebar() {
       animate={{ width: collapsed ? 64 : 240 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
       className={cn(
-        "flex flex-col h-screen border-r sticky top-0 z-30 select-none",
-        "bg-[var(--sidebar-bg)] border-[var(--sidebar-border)]"
+        "flex flex-col h-screen sticky top-0 z-30 select-none border-r transition-all duration-200",
+        "bg-neutral-50 border-neutral-200/40 dark:bg-neutral-950 dark:border-neutral-900"
       )}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-4 h-14 border-b border-[var(--sidebar-border)]">
-        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-accent-500 shrink-0">
-          <Zap className="w-4 h-4 text-white" />
-        </div>
+      <div className="flex items-center gap-2.5 px-5.5 h-14 border-b border-neutral-100 dark:border-neutral-900">
+        <Zap className="w-4 h-4 text-neutral-900 dark:text-neutral-50 shrink-0" />
         <AnimatePresence>
           {!collapsed && (
             <motion.span
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
-              className="text-sm font-semibold text-text-primary whitespace-nowrap overflow-hidden"
+              className="text-xs font-semibold tracking-wider text-neutral-900 dark:text-neutral-50 uppercase whitespace-nowrap overflow-hidden"
             >
               OutReach AI
             </motion.span>
@@ -70,7 +68,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -82,17 +80,16 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150",
-                "hover:bg-[var(--sidebar-hover)]",
+                "group flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150",
                 isActive
-                  ? "bg-[var(--sidebar-active)] text-text-primary"
-                  : "text-text-secondary hover:text-text-primary"
+                  ? "bg-neutral-100/80 dark:bg-white/[0.06] text-neutral-900 dark:text-neutral-50"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 hover:bg-neutral-50 dark:hover:bg-white/[0.02]"
               )}
             >
               <item.icon
                 className={cn(
-                  "w-[18px] h-[18px] shrink-0 transition-colors",
-                  isActive ? "text-accent-500" : ""
+                  "w-4 h-4 shrink-0 transition-colors",
+                  isActive ? "text-neutral-950 dark:text-neutral-50" : "text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-600 dark:group-hover:text-neutral-300"
                 )}
               />
               <AnimatePresence>
@@ -113,19 +110,19 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-2 border-t border-[var(--sidebar-border)] space-y-1">
+      <div className="p-3 border-t border-neutral-100 dark:border-neutral-900 space-y-0.5">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className={cn(
-            "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150",
-            "text-text-secondary hover:text-text-primary hover:bg-[var(--sidebar-hover)]"
+            "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150",
+            "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 hover:bg-neutral-50 dark:hover:bg-white/[0.02]"
           )}
         >
           {resolvedTheme === "dark" ? (
-            <Sun className="w-[18px] h-[18px] shrink-0" />
+            <Sun className="w-4 h-4 shrink-0 text-neutral-400 dark:text-neutral-500" />
           ) : (
-            <Moon className="w-[18px] h-[18px] shrink-0" />
+            <Moon className="w-4 h-4 shrink-0 text-neutral-400 dark:text-neutral-500" />
           )}
           <AnimatePresence>
             {!collapsed && (
@@ -145,14 +142,14 @@ export function Sidebar() {
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-150",
-            "text-text-secondary hover:text-text-primary hover:bg-[var(--sidebar-hover)]"
+            "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150",
+            "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 hover:bg-neutral-50 dark:hover:bg-white/[0.02]"
           )}
         >
           {collapsed ? (
-            <ChevronRight className="w-[18px] h-[18px] shrink-0" />
+            <ChevronRight className="w-4 h-4 shrink-0 text-neutral-400 dark:text-neutral-500" />
           ) : (
-            <ChevronLeft className="w-[18px] h-[18px] shrink-0" />
+            <ChevronLeft className="w-4 h-4 shrink-0 text-neutral-400 dark:text-neutral-500" />
           )}
           <AnimatePresence>
             {!collapsed && (

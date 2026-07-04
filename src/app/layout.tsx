@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { Sidebar } from "@/components/layout/sidebar";
 import { CommandPalette } from "@/components/common/command-palette";
+import { PageTransition } from "@/components/layout/page-transition";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,7 +31,7 @@ export default function RootLayout({
             <Sidebar />
             <main className="flex-1 overflow-y-auto">
               <div className="max-w-6xl mx-auto px-6 py-8 lg:px-8">
-                {children}
+                <PageTransition>{children}</PageTransition>
               </div>
             </main>
           </div>
