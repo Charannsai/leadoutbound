@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSessions, useCreateSession, useDeleteSession } from "@/hooks/use-sessions";
 import { PageHeader } from "@/components/common/page-header";
+import { Modal } from "@/components/common/modal";
 import { StatusBadge } from "@/components/common/status-badge";
 import { EmptyState } from "@/components/common/empty-state";
 import Link from "next/link";
@@ -28,6 +29,7 @@ export default function SessionsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
 
   const { data: sessions, isLoading } = useSessions(search, statusFilter);
   const deleteSession = useDeleteSession();
@@ -156,9 +158,7 @@ export default function SessionsPage() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      if (confirm("Delete this session?")) {
-                        deleteSession.mutate(session.id);
-                      }
+                      setDeleteSessionId(session.id);
                     }}
                     className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-danger-50 hover:text-danger-500 dark:hover:bg-danger-500/10 transition-all"
                   >
@@ -313,6 +313,20 @@ function CreateSessionModal({ onClose }: { onClose: () => void }) {
           </div>
         </form>
       </motion.div>
+
+      <Modal
+        isOpen={deleteSessionId !== null}
+        onClose={() => setDeleteSessionId(null)}
+        onConfirm={() => {
+          if (deleteSessionId) {
+            deleteSession.mutate(deleteSessionId);
+          }
+        }}
+        title="Delete Session"
+        description="Are you sure you want to delete this outreach session? This will remove all associated lead qualification records."
+        confirmText="Delete"
+        isDanger={true}
+      />
     </motion.div>
   );
 }
