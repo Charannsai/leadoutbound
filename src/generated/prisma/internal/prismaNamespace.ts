@@ -1093,6 +1093,7 @@ export const LeadEmailScalarFieldEnum = {
   sentAt: 'sentAt',
   openedAt: 'openedAt',
   aiReasoning: 'aiReasoning',
+  attachments: 'attachments',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -37,6 +37,7 @@ export type LeadEmailMinAggregateOutputType = {
   sentAt: Date | null
   openedAt: Date | null
   aiReasoning: string | null
+  attachments: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +55,7 @@ export type LeadEmailMaxAggregateOutputType = {
   sentAt: Date | null
   openedAt: Date | null
   aiReasoning: string | null
+  attachments: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +73,7 @@ export type LeadEmailCountAggregateOutputType = {
   sentAt: number
   openedAt: number
   aiReasoning: number
+  attachments: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +93,7 @@ export type LeadEmailMinAggregateInputType = {
   sentAt?: true
   openedAt?: true
   aiReasoning?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +111,7 @@ export type LeadEmailMaxAggregateInputType = {
   sentAt?: true
   openedAt?: true
   aiReasoning?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +129,7 @@ export type LeadEmailCountAggregateInputType = {
   sentAt?: true
   openedAt?: true
   aiReasoning?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +220,7 @@ export type LeadEmailGroupByOutputType = {
   sentAt: Date | null
   openedAt: Date | null
   aiReasoning: string | null
+  attachments: string | null
   createdAt: Date
   updatedAt: Date
   _count: LeadEmailCountAggregateOutputType | null
@@ -252,6 +259,7 @@ export type LeadEmailWhereInput = {
   sentAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   openedAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   aiReasoning?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
+  attachments?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
   lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
@@ -270,6 +278,7 @@ export type LeadEmailOrderByWithRelationInput = {
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   openedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   aiReasoning?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lead?: Prisma.LeadOrderByWithRelationInput
@@ -291,6 +300,7 @@ export type LeadEmailWhereUniqueInput = Prisma.AtLeast<{
   sentAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   openedAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   aiReasoning?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
+  attachments?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
   lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
@@ -309,6 +319,7 @@ export type LeadEmailOrderByWithAggregationInput = {
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   openedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   aiReasoning?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LeadEmailCountOrderByAggregateInput
@@ -332,6 +343,7 @@ export type LeadEmailScalarWhereWithAggregatesInput = {
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LeadEmail"> | Date | string | null
   openedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LeadEmail"> | Date | string | null
   aiReasoning?: Prisma.StringNullableWithAggregatesFilter<"LeadEmail"> | string | null
+  attachments?: Prisma.StringNullableWithAggregatesFilter<"LeadEmail"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LeadEmail"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LeadEmail"> | Date | string
 }
@@ -348,6 +360,7 @@ export type LeadEmailCreateInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lead: Prisma.LeadCreateNestedOneWithoutEmailsInput
@@ -366,6 +379,7 @@ export type LeadEmailUncheckedCreateInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -382,6 +396,7 @@ export type LeadEmailUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lead?: Prisma.LeadUpdateOneRequiredWithoutEmailsNestedInput
@@ -400,6 +415,7 @@ export type LeadEmailUncheckedUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -417,6 +433,7 @@ export type LeadEmailCreateManyInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -433,6 +450,7 @@ export type LeadEmailUpdateManyMutationInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -450,6 +468,7 @@ export type LeadEmailUncheckedUpdateManyInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -477,6 +496,7 @@ export type LeadEmailCountOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   aiReasoning?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -494,6 +514,7 @@ export type LeadEmailMaxOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   aiReasoning?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -511,6 +532,7 @@ export type LeadEmailMinOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   aiReasoning?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -573,6 +595,7 @@ export type LeadEmailCreateWithoutLeadInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -589,6 +612,7 @@ export type LeadEmailUncheckedCreateWithoutLeadInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -634,6 +658,7 @@ export type LeadEmailScalarWhereInput = {
   sentAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   openedAt?: Prisma.DateTimeNullableFilter<"LeadEmail"> | Date | string | null
   aiReasoning?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
+  attachments?: Prisma.StringNullableFilter<"LeadEmail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LeadEmail"> | Date | string
 }
@@ -650,6 +675,7 @@ export type LeadEmailCreateManyLeadInput = {
   sentAt?: Date | string | null
   openedAt?: Date | string | null
   aiReasoning?: string | null
+  attachments?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -666,6 +692,7 @@ export type LeadEmailUpdateWithoutLeadInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -682,6 +709,7 @@ export type LeadEmailUncheckedUpdateWithoutLeadInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -698,6 +726,7 @@ export type LeadEmailUncheckedUpdateManyWithoutLeadInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   aiReasoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -717,6 +746,7 @@ export type LeadEmailSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   sentAt?: boolean
   openedAt?: boolean
   aiReasoning?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -735,6 +765,7 @@ export type LeadEmailSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   sentAt?: boolean
   openedAt?: boolean
   aiReasoning?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -753,6 +784,7 @@ export type LeadEmailSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   sentAt?: boolean
   openedAt?: boolean
   aiReasoning?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -771,11 +803,12 @@ export type LeadEmailSelectScalar = {
   sentAt?: boolean
   openedAt?: boolean
   aiReasoning?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LeadEmailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "subject" | "body" | "htmlBody" | "status" | "emailType" | "gmailThreadId" | "gmailMessageId" | "sentAt" | "openedAt" | "aiReasoning" | "createdAt" | "updatedAt", ExtArgs["result"]["leadEmail"]>
+export type LeadEmailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "subject" | "body" | "htmlBody" | "status" | "emailType" | "gmailThreadId" | "gmailMessageId" | "sentAt" | "openedAt" | "aiReasoning" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["leadEmail"]>
 export type LeadEmailInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
 }
@@ -804,6 +837,7 @@ export type $LeadEmailPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     sentAt: Date | null
     openedAt: Date | null
     aiReasoning: string | null
+    attachments: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["leadEmail"]>
@@ -1242,6 +1276,7 @@ export interface LeadEmailFieldRefs {
   readonly sentAt: Prisma.FieldRef<"LeadEmail", 'DateTime'>
   readonly openedAt: Prisma.FieldRef<"LeadEmail", 'DateTime'>
   readonly aiReasoning: Prisma.FieldRef<"LeadEmail", 'String'>
+  readonly attachments: Prisma.FieldRef<"LeadEmail", 'String'>
   readonly createdAt: Prisma.FieldRef<"LeadEmail", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LeadEmail", 'DateTime'>
 }
