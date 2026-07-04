@@ -20,6 +20,8 @@ export async function POST(
       return NextResponse.json({ error: "Lead not found" }, { status: 404 });
     }
 
+    const isLinkedin = lead.session.outboundChannel === "linkedin";
+
     // Determine template to use
     let template = null;
     if (templateId) {
@@ -27,7 +29,7 @@ export async function POST(
     } else if (lead.session.templateId) {
       template = await prisma.template.findUnique({ where: { id: lead.session.templateId } });
     } else {
-      // Find default Job Application or General template
+      // Find default template
       template = await prisma.template.findFirst({
         where: { category: "job_application", isDefault: true }
       });
@@ -47,7 +49,7 @@ export async function POST(
       geminiClient = await getGeminiClient();
     } catch {
       // Mock personalization fallback
-      const mockResult = generateMockEmail(lead, template, kbContext);
+      const mockResult = generateMockEmail(lead, template, kbContext, isLinkedin);
       
       const email = await prisma.leadEmail.create({
         data: {
@@ -55,7 +57,8 @@ export async function POST(
           subject: mockResult.subject,
           body: mockResult.body,
           aiReasoning: mockResult.aiReasoning,
-          status: "draft"
+          status: "draft",
+          emailType: isLinkedin ? "linkedin_note" : "initial"
         }
       });
 
@@ -69,7 +72,31 @@ export async function POST(
     }
 
     // Construct AI Prompt
-    const systemPrompt = `You are a cold outbound email personalization expert.
+    const systemPrompt = isLinkedin
+      ? `You are a cold outbound LinkedIn personalization expert.
+Your goal is to write a highly tailored, conversational, and conversion-focused LinkedIn Connection Request Note to a recipient based on their profile, their company details, a template guidelines, and the sender's knowledge base.
+
+Sender Details (Knowledge Base):
+${kbContext}
+
+Template Instructions:
+Message Rules: ${template.bodyInstructions || "Write a very short, engaging connection invite note."}
+Tone: ${template.tone}
+
+Important Rules:
+- STRICTLY under 300 characters in total length (LinkedIn connection notes character limit constraint).
+- DO NOT use any subject lines.
+- Write an original, customized connection note referencing their company/role.
+- Do not use generic placeholders like [Company Name] or [Recipient Name]. Replace them with the actual names.
+- Make it conversational and close with a direct, short call to action.
+
+Return your response strictly in the following JSON format:
+{
+  "subject": "LinkedIn Connection Request",
+  "body": "Your short invite message (must be strictly under 300 characters including spacing)",
+  "aiReasoning": "1-sentence explanation of why you wrote this specific pitch"
+}`
+      : `You are a cold outbound email personalization expert.
 Your goal is to write a highly tailored, conversion-focused cold email to a recipient based on their profile, their company details, a template guidelines, and the sender's knowledge base.
 
 Sender Details (Knowledge Base):
@@ -106,18 +133,19 @@ Qualifications: ${lead.qualificationReason || "—"}`;
     try {
       const resultText = await geminiClient.generateContent(prompt, systemPrompt);
       const parsed = safeParseJson(resultText, {
-        subject: `Outreach to ${lead.companyName}`,
-        body: "Hello...",
+        subject: isLinkedin ? "LinkedIn Connection Request" : `Outreach to ${lead.companyName}`,
+        body: isLinkedin ? `Hi ${lead.contactName || "there"}, noticed your work at ${lead.companyName}. Let's connect!` : "Hello...",
         aiReasoning: "Custom pitch generated based on company profile"
       });
 
       const email = await prisma.leadEmail.create({
         data: {
           leadId,
-          subject: parsed.subject || `Outreach to ${lead.companyName}`,
+          subject: parsed.subject || (isLinkedin ? "LinkedIn Connection Request" : `Outreach to ${lead.companyName}`),
           body: parsed.body || "Hello...",
           aiReasoning: parsed.aiReasoning || "Custom pitch generated based on company profile",
-          status: "draft"
+          status: "draft",
+          emailType: isLinkedin ? "linkedin_note" : "initial"
         }
       });
 
@@ -131,14 +159,15 @@ Qualifications: ${lead.qualificationReason || "—"}`;
     } catch (err) {
       console.error("Personalization LLM call failed:", err);
       // Fallback email
-      const mockResult = generateMockEmail(lead, template, kbContext);
+      const mockResult = generateMockEmail(lead, template, kbContext, isLinkedin);
       const email = await prisma.leadEmail.create({
         data: {
           leadId,
           subject: mockResult.subject,
           body: mockResult.body,
           aiReasoning: "Fallback generated due to API issue.",
-          status: "draft"
+          status: "draft",
+          emailType: isLinkedin ? "linkedin_note" : "initial"
         }
       });
       await prisma.lead.update({ where: { id: leadId }, data: { pipelineStage: "personalized" } });
@@ -150,9 +179,17 @@ Qualifications: ${lead.qualificationReason || "—"}`;
   }
 }
 
-function generateMockEmail(lead: any, template: any, kbContext: string) {
+function generateMockEmail(lead: any, template: any, kbContext: string, isLinkedin = false) {
   const contactName = lead.contactName || "there";
   const companyName = lead.companyName;
+
+  if (isLinkedin) {
+    return {
+      subject: "LinkedIn Connection Request",
+      body: `Hi ${contactName}, noticed your work at ${companyName}. I have 2 years React/Next.js experience and would love to connect to see if there's any engineering capacity alignment. Cheers!`,
+      aiReasoning: "Fallback connection note generated due to API issue."
+    };
+  }
 
   return {
     subject: `Question regarding ${template.category === "freelance" ? "engineering capacity" : "openings"} at ${companyName}`,
