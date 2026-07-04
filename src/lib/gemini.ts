@@ -107,3 +107,19 @@ export class GeminiClient {
 export function createGeminiClient(apiKey: string, model?: string): GeminiClient {
   return new GeminiClient(apiKey, model);
 }
+
+import { prisma } from "./prisma";
+
+export async function getGeminiClient(): Promise<GeminiClient> {
+  const apiKeySetting = await prisma.settings.findUnique({
+    where: { key: "gemini_api_key" },
+  });
+  const modelSetting = await prisma.settings.findUnique({
+    where: { key: "gemini_model" },
+  });
+
+  const apiKey = apiKeySetting?.value || process.env.GEMINI_API_KEY || "";
+  const model = modelSetting?.value || "gemini-2.0-flash";
+
+  return new GeminiClient(apiKey, model);
+}
