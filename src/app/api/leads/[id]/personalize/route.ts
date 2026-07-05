@@ -20,7 +20,20 @@ export async function POST(
       return NextResponse.json({ error: "Lead not found" }, { status: 404 });
     }
 
-    const isLinkedin = lead.session.outboundChannel === "linkedin";
+    let recommendedChannel = lead.session.outboundChannel;
+    if (lead.outreachStrategy) {
+      try {
+        const strategy = JSON.parse(lead.outreachStrategy);
+        if (strategy && strategy.recommendedChannel) {
+          recommendedChannel = strategy.recommendedChannel;
+        }
+      } catch (e) {
+        console.error("Failed to parse lead strategy:", e);
+      }
+    }
+
+    const isLinkedin = recommendedChannel === "linkedin";
+    const isCareersPage = recommendedChannel === "careers_page";
 
     // Determine template to use
     let template = null;
@@ -49,7 +62,7 @@ export async function POST(
       geminiClient = await getGeminiClient();
     } catch {
       // Mock personalization fallback
-      const mockResult = generateMockEmail(lead, template, kbContext, isLinkedin);
+      const mockResult = generateMockEmail(lead, template, kbContext, recommendedChannel);
       
       const email = await prisma.leadEmail.create({
         data: {
@@ -58,7 +71,7 @@ export async function POST(
           body: mockResult.body,
           aiReasoning: mockResult.aiReasoning,
           status: "draft",
-          emailType: isLinkedin ? "linkedin_note" : "initial"
+          emailType: isLinkedin ? "linkedin_note" : isCareersPage ? "careers_pitch" : "initial"
         }
       });
 
@@ -95,6 +108,29 @@ Return your response strictly in the following JSON format:
   "subject": "LinkedIn Connection Request",
   "body": "Your short invite message (must be strictly under 300 characters including spacing)",
   "aiReasoning": "1-sentence explanation of why you wrote this specific pitch"
+}`
+      : isCareersPage
+      ? `You are a cover letter and job application customization expert.
+Your goal is to write a highly tailored, brief Greenhouse / Careers page application pitch / cover letter paragraph to a company based on their details, the job role, template guidelines, and the sender's knowledge base.
+
+Sender Details (Knowledge Base):
+${kbContext}
+
+Template Instructions:
+Message Rules: ${template.bodyInstructions || "Write a highly personalized cover letter note explaining why you fit this role."}
+Tone: ${template.tone}
+
+Instructions:
+- Write a short, highly targeted cover letter introduction / pitch (approx 150-250 words).
+- DO NOT use any subject lines.
+- Write a customized pitch referencing their company/role.
+- Do not use generic placeholders like [Company Name] or [Recipient Name]. Replace them with the actual names.
+
+Return your response strictly in the following JSON format:
+{
+  "subject": "Careers Page Application Pitch",
+  "body": "Your personalized application message (use \\n for spacing)",
+  "aiReasoning": "1-sentence explanation of why you wrote this specific cover letter pitch"
 }`
       : `You are a cold outbound email personalization expert.
 Your goal is to write a highly tailored, conversion-focused cold email to a recipient based on their profile, their company details, a template guidelines, and the sender's knowledge base.
@@ -133,7 +169,7 @@ Qualifications: ${lead.qualificationReason || "—"}`;
     try {
       const resultText = await geminiClient.generateContent(prompt, systemPrompt);
       const parsed = safeParseJson(resultText, {
-        subject: isLinkedin ? "LinkedIn Connection Request" : `Outreach to ${lead.companyName}`,
+        subject: isLinkedin ? "LinkedIn Connection Request" : isCareersPage ? "Careers Page Application Pitch" : `Outreach to ${lead.companyName}`,
         body: isLinkedin ? `Hi ${lead.contactName || "there"}, noticed your work at ${lead.companyName}. Let's connect!` : "Hello...",
         aiReasoning: "Custom pitch generated based on company profile"
       });
@@ -141,11 +177,11 @@ Qualifications: ${lead.qualificationReason || "—"}`;
       const email = await prisma.leadEmail.create({
         data: {
           leadId,
-          subject: parsed.subject || (isLinkedin ? "LinkedIn Connection Request" : `Outreach to ${lead.companyName}`),
+          subject: parsed.subject || (isLinkedin ? "LinkedIn Connection Request" : isCareersPage ? "Careers Page Application Pitch" : `Outreach to ${lead.companyName}`),
           body: parsed.body || "Hello...",
           aiReasoning: parsed.aiReasoning || "Custom pitch generated based on company profile",
           status: "draft",
-          emailType: isLinkedin ? "linkedin_note" : "initial"
+          emailType: isLinkedin ? "linkedin_note" : isCareersPage ? "careers_pitch" : "initial"
         }
       });
 
@@ -159,7 +195,7 @@ Qualifications: ${lead.qualificationReason || "—"}`;
     } catch (err) {
       console.error("Personalization LLM call failed:", err);
       // Fallback email
-      const mockResult = generateMockEmail(lead, template, kbContext, isLinkedin);
+      const mockResult = generateMockEmail(lead, template, kbContext, recommendedChannel);
       const email = await prisma.leadEmail.create({
         data: {
           leadId,
@@ -167,7 +203,7 @@ Qualifications: ${lead.qualificationReason || "—"}`;
           body: mockResult.body,
           aiReasoning: "Fallback generated due to API issue.",
           status: "draft",
-          emailType: isLinkedin ? "linkedin_note" : "initial"
+          emailType: isLinkedin ? "linkedin_note" : isCareersPage ? "careers_pitch" : "initial"
         }
       });
       await prisma.lead.update({ where: { id: leadId }, data: { pipelineStage: "personalized" } });
@@ -179,15 +215,21 @@ Qualifications: ${lead.qualificationReason || "—"}`;
   }
 }
 
-function generateMockEmail(lead: any, template: any, kbContext: string, isLinkedin = false) {
+function generateMockEmail(lead: any, template: any, kbContext: string, recommendedChannel = "email") {
   const contactName = lead.contactName || "there";
   const companyName = lead.companyName;
 
-  if (isLinkedin) {
+  if (recommendedChannel === "linkedin") {
     return {
       subject: "LinkedIn Connection Request",
       body: `Hi ${contactName}, noticed your work at ${companyName}. I have 2 years React/Next.js experience and would love to connect to see if there's any engineering capacity alignment. Cheers!`,
       aiReasoning: "Fallback connection note generated due to API issue."
+    };
+  } else if (recommendedChannel === "careers_page") {
+    return {
+      subject: "Careers Page Application Pitch",
+      body: `Dear hiring team at ${companyName},\n\nI am writing to express my interest in working with you. I bring over 2 years of software development experience specializing in React, TypeScript, and web engineering. I admire ${companyName}'s work and believe my capacity aligns well with your team.\n\nThank you for your consideration,\n[Your Name]`,
+      aiReasoning: "Fallback cover letter generated due to API issue."
     };
   }
 
