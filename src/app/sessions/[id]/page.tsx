@@ -549,9 +549,107 @@ export default function SessionDetailPage({
             )}
           </div>
         )}
+        {activeTab === "leads" && (
+          <div className="space-y-4 animate-in fade-in-50">
+            {/* Filter Sub-tabs */}
+            <div className="flex gap-2 border-b border-border pb-2.5">
+              <button
+                type="button"
+                onClick={() => setLeadsView("active")}
+                className={cn(
+                  "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                  leadsView === "active"
+                    ? "bg-accent-500/10 text-accent-500 border border-accent-500/15"
+                    : "text-text-secondary hover:text-text-primary border border-transparent"
+                )}
+              >
+                Active Prospects ({leads.filter(l => l.pipelineStage !== "rejected").length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setLeadsView("discarded")}
+                className={cn(
+                  "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                  leadsView === "discarded"
+                    ? "bg-accent-500/10 text-accent-500 border border-accent-500/15"
+                    : "text-text-secondary hover:text-text-primary border border-transparent"
+                )}
+              >
+                Discarded Leads ({leads.filter(l => l.pipelineStage === "rejected").length})
+              </button>
+            </div>
 
+            {/* Leads List rendering */}
+            {(() => {
+              const list = leads.filter(l => leadsView === "active" ? l.pipelineStage !== "rejected" : l.pipelineStage === "rejected");
+              if (list.length > 0) {
+                return (
+                  <div className="border border-border rounded-xl overflow-hidden bg-surface divide-y divide-border shadow-sm">
+                    {list.map((lead) => (
+                      <div
+                        key={lead.id}
+                        onClick={() => setActiveLeadDetailsId(lead.id)}
+                        className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface-hover transition-colors cursor-pointer"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm text-text-primary">{lead.companyName}</span>
+                            {lead.companyWebsite && (
+                              <a
+                                href={lead.companyWebsite}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-text-tertiary hover:text-accent-500 transition-colors"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            )}
+                            <span className="text-text-tertiary">·</span>
+                            <span className="text-xs text-text-secondary font-medium">{lead.location}</span>
+                            {lead.applyDirect && (
+                              <span className="text-[9px] px-1.5 py-0.5 font-bold rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wide">
+                                Apply Directly
+                              </span>
+                            )}
+                          </div>
+                          
+                          <div className="text-xs text-text-secondary">
+                            <span className="font-semibold text-text-primary">{lead.contactName || "No Contact"}</span>
+                            {lead.contactTitle && ` (${lead.contactTitle})`}
+                          </div>
 
+                          {lead.qualificationReason && (
+                            <div className="text-xs text-text-tertiary bg-surface-secondary px-2.5 py-1.5 rounded-lg max-w-xl mt-1.5 border border-border">
+                              <span className="font-semibold text-text-secondary mr-1">AI Reason ({lead.qualificationScore}% Match):</span>
+                              {lead.qualificationReason}
+                            </div>
+                          )}
+                        </div>
 
+                        <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                          <StatusBadge status={lead.pipelineStage} />
+                          <button
+                            onClick={() => handleDiscardLead(lead.id)}
+                            className="p-2 rounded-lg border border-transparent hover:border-danger-500/10 hover:bg-danger-50 hover:text-danger-600 dark:hover:bg-danger-500/10 transition-all text-text-tertiary"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              } else {
+                return (
+                  <div className="text-center py-16 text-text-secondary text-sm">
+                    {leadsView === "active" ? "No active prospects found." : "No discarded leads in this session."}
+                  </div>
+                );
+              }
+            })()}
+          </div>
+        )}
         {activeTab === "emails" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[500px]">
             {/* List side */}
