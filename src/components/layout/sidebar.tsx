@@ -101,7 +101,7 @@ export function Sidebar() {
     <div
       className={cn(
         "h-screen flex flex-col justify-between transition-all duration-300 ease-in-out shrink-0 select-none",
-        "bg-sidebar-bg border-r border-sidebar-border text-gray-300",
+        "bg-sidebar-bg border-r border-sidebar-border text-text-secondary",
         isCollapsed ? "w-16" : "w-52"
       )}
     >
@@ -116,8 +116,8 @@ export function Sidebar() {
             animate={{ opacity: 1, x: 0 }}
             className="flex flex-col"
           >
-            <span className="text-xs font-bold text-white tracking-tight uppercase">Apollo.io</span>
-            <span className="text-[9px] text-gray-500 font-semibold uppercase tracking-wider">Outreach</span>
+            <span className="text-xs font-bold text-text-primary tracking-tight uppercase">Apollo.io</span>
+            <span className="text-[9px] text-text-tertiary font-semibold uppercase tracking-wider">Outreach</span>
           </motion.div>
         )}
       </div>
@@ -127,7 +127,7 @@ export function Sidebar() {
         {navGroups.map((group, groupIdx) => (
           <div key={groupIdx} className="space-y-0.5">
             {!isCollapsed && group.title && (
-              <p className="px-2 text-[9px] font-bold text-gray-500/70 tracking-wider uppercase mb-1">
+              <p className="px-2 text-[9px] font-bold text-text-tertiary tracking-wider uppercase mb-1">
                 {group.title}
               </p>
             )}
@@ -147,10 +147,10 @@ export function Sidebar() {
                       "flex items-center gap-2.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all duration-150 relative group",
                       isActive
                         ? "bg-sidebar-active-bg text-sidebar-active-text border border-sidebar-border/30 shadow-sm"
-                        : "hover:bg-sidebar-hover text-gray-400 hover:text-white"
+                        : "hover:bg-sidebar-hover text-sidebar-inactive-text hover:text-sidebar-hover-text"
                     )}
                   >
-                    <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-sidebar-active-text" : "text-gray-400 group-hover:text-white")} />
+                    <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-sidebar-active-text" : "text-sidebar-inactive-text group-hover:text-sidebar-hover-text")} />
                     {!isCollapsed && (
                       <span className="truncate">{item.label}</span>
                     )}

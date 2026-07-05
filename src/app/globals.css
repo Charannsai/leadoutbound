@@ -271,4 +271,22 @@ select,
   height: auto !important;
 }
 
+/* Dark mode active state overrides to force white text on white active elements to charcoal */
+.dark .bg-accent-500 {
+  background-color: #ffffff !important;
+  color: #1d1d1d !important;
+}
+.dark .bg-accent-500 * {
+  color: #1d1d1d !important;
+}
+.dark .hover\:bg-accent-600:hover {
+  background-color: #f3f4f6 !important;
+}
+.dark .text-accent-500 {
+  color: #ffffff !important;
+}
+.dark .border-accent-500 {
+  border-color: #ffffff !important;
+}
+
 
