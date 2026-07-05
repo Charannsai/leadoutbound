@@ -84,9 +84,17 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limitInput = searchParams.get("limit");
+    const limit = limitInput === "all" ? undefined : parseInt(limitInput || "50", 10);
+    const skip = limit ? (page - 1) * limit : undefined;
+    const take = limit;
+
     const leads = await prisma.lead.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      skip,
+      take,
       include: {
         emails: { select: { status: true } },
         listLeads: { select: { listId: true } }

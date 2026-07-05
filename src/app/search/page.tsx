@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import {
@@ -48,6 +48,14 @@ export default function SearchPage() {
   const [listIdFilter, setListIdFilter] = useState("");
   const [seqIdFilter, setSeqIdFilter] = useState("");
 
+  // Pagination State
+  const [page, setPage] = useState(1);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [keyword, location, industry, sizeFilter, stageFilter, listIdFilter, seqIdFilter, techFilter, fundingFilter, revenueFilter]);
+
   // Grid Selection States
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
 
@@ -79,7 +87,7 @@ export default function SearchPage() {
 
   // Query database leads
   const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({
-    queryKey: ["leads", keyword, location, industry, sizeFilter.join(","), stageFilter, listIdFilter, seqIdFilter, techFilter, fundingFilter, revenueFilter],
+    queryKey: ["leads", keyword, location, industry, sizeFilter.join(","), stageFilter, listIdFilter, seqIdFilter, techFilter, fundingFilter, revenueFilter, page],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (keyword) params.set("search", keyword);
@@ -92,6 +100,9 @@ export default function SearchPage() {
       if (techFilter) params.set("tech", techFilter);
       if (fundingFilter) params.set("funding", fundingFilter);
       if (revenueFilter) params.set("revenue", revenueFilter);
+      
+      params.set("page", page.toString());
+      params.set("limit", "50");
 
       const res = await fetch(`/api/leads?${params}`);
       if (!res.ok) throw new Error("Failed to fetch leads");
@@ -871,6 +882,33 @@ export default function SearchPage() {
               )
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {(activeTab === "people" || activeTab === "companies") && leads.length > 0 && (
+            <div className="flex items-center justify-between px-4 py-2.5 border-t border-border bg-surface-secondary/20 shrink-0">
+              <span className="text-[10px] text-text-secondary">
+                Page {page}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  disabled={page === 1}
+                  onClick={() => { setPage(prev => Math.max(1, prev - 1)); setSelectedLeadIds([]); }}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-surface-secondary border border-border text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:text-text-primary text-[10px] font-bold rounded-lg shadow-sm transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  Previous
+                </button>
+                <button
+                  disabled={leads.length < 50}
+                  onClick={() => { setPage(prev => prev + 1); setSelectedLeadIds([]); }}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-surface-secondary border border-border text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:text-text-primary text-[10px] font-bold rounded-lg shadow-sm transition-colors cursor-pointer"
+                >
+                  Next
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
