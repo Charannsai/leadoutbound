@@ -932,8 +932,8 @@ export default function SessionDetailPage({
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-xl bg-surface border-l border-border shadow-2xl z-50 overflow-y-auto flex flex-col p-6 space-y-6"
+              transition={{ type: "spring", damping: 28, stiffness: 220 }}
+              className="fixed top-0 right-0 h-full w-full max-w-xl bg-surface border-l border-border/60 shadow-[0_0_50px_rgba(0,0,0,0.12)] z-50 overflow-y-auto flex flex-col p-8 space-y-8 pb-16"
             >
               {(() => {
                 const lead = session.leads.find((l: any) => l.id === activeLeadDetailsId);
@@ -948,30 +948,51 @@ export default function SessionDetailPage({
                   try { strategy = JSON.parse(lead.outreachStrategy); } catch {}
                 }
 
+                // Helper to color-code scores
+                const getScoreColor = (s: number) => {
+                  if (s >= 85) return "text-emerald-500 stroke-emerald-500 bg-emerald-500/10 border-emerald-500/20";
+                  if (s >= 70) return "text-amber-500 stroke-amber-500 bg-amber-500/10 border-amber-500/20";
+                  return "text-neutral-500 stroke-neutral-500 bg-neutral-500/10 border-neutral-500/20";
+                };
+
+                const getProgressBarColor = (s: number) => {
+                  if (s >= 85) return "bg-emerald-500";
+                  if (s >= 70) return "bg-amber-500";
+                  return "bg-neutral-400 dark:bg-neutral-600";
+                };
+
                 return (
                   <div className="flex flex-col h-full justify-between min-w-0">
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       {/* Drawer Header */}
-                      <div className="flex items-start justify-between border-b border-border pb-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative w-14 h-14 flex items-center justify-center shrink-0 rounded-full bg-surface-secondary border border-border">
-                            <span className="text-sm font-bold text-text-primary">{lead.qualificationScore || 0}%</span>
+                      <div className="flex items-start justify-between border-b border-border/50 pb-6">
+                        <div className="flex items-center gap-5">
+                          {/* Radial Progress Score widget */}
+                          <div className="relative w-16 h-16 flex items-center justify-center shrink-0">
+                            <svg className="absolute w-full h-full transform -rotate-90">
+                              <circle cx="32" cy="32" r="28" className="stroke-surface-tertiary" strokeWidth="3.5" fill="transparent" />
+                              <circle cx="32" cy="32" r="28" className={cn("transition-all duration-500", lead.qualificationScore && lead.qualificationScore >= 85 ? "stroke-emerald-500" : lead.qualificationScore && lead.qualificationScore >= 70 ? "stroke-amber-500" : "stroke-neutral-500")} strokeWidth="3.5" fill="transparent"
+                                strokeDasharray={2 * Math.PI * 28}
+                                strokeDashoffset={2 * Math.PI * 28 * (1 - (lead.qualificationScore || 0) / 100)}
+                              />
+                            </svg>
+                            <span className="text-sm font-bold tracking-tight text-text-primary">{lead.qualificationScore || 0}%</span>
                           </div>
                           <div>
-                            <h3 className="font-semibold text-base text-text-primary flex items-center gap-1.5">
+                            <h3 className="font-semibold text-lg text-text-primary flex items-center gap-2">
                               {lead.companyName}
                               {lead.companyWebsite && (
                                 <a
                                   href={lead.companyWebsite}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="text-text-tertiary hover:text-accent-500 transition-colors"
+                                  className="p-1 rounded-md hover:bg-surface-secondary text-text-tertiary hover:text-accent-500 transition-all"
                                 >
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </a>
                               )}
                             </h3>
-                            <p className="text-xs text-text-secondary">
+                            <p className="text-xs text-text-secondary mt-0.5 font-medium">
                               {lead.contactName || "No Contact"} · {lead.contactTitle || "Hiring Team"}
                             </p>
                           </div>
@@ -979,36 +1000,40 @@ export default function SessionDetailPage({
                         <button
                           type="button"
                           onClick={() => setActiveLeadDetailsId(null)}
-                          className="p-1 rounded-lg hover:bg-surface-hover text-text-tertiary hover:text-text-primary transition-colors cursor-pointer"
+                          className="p-1.5 rounded-full hover:bg-surface-hover text-text-tertiary hover:text-text-primary transition-all cursor-pointer"
                         >
-                          <X className="w-5 h-5" />
+                          <X className="w-4.5 h-4.5" />
                         </button>
                       </div>
 
                       {/* 8-Dimensional Scorecard */}
-                      <div className="space-y-3">
-                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-1.5">
-                          <Award className="w-4 h-4 text-text-tertiary" />
+                      <div className="space-y-4">
+                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2">
+                          <Award className="w-4 h-4 text-text-secondary" />
                           AI Qualification Scorecard
                         </h4>
                         
                         {report ? (
-                          <div className="grid grid-cols-2 gap-3">
+                          <div className="grid grid-cols-2 gap-3.5">
                             {Object.entries(report).map(([key, details]: [string, any]) => (
-                              <div key={key} className="p-3 border border-border rounded-xl bg-surface-secondary space-y-1.5">
-                                <div className="flex justify-between text-xs font-semibold text-text-primary capitalize">
-                                  <span>{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                  <span className="text-accent-500 font-bold">{details.score}%</span>
+                              <div key={key} className="p-3.5 border border-border/50 rounded-xl bg-surface-secondary/70 hover:border-border transition-colors space-y-2 shadow-sm">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs font-medium text-text-primary capitalize">
+                                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                                  </span>
+                                  <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded-full border", getScoreColor(details.score))}>
+                                    {details.score}%
+                                  </span>
                                 </div>
                                 <div className="w-full bg-surface-tertiary h-1.5 rounded-full overflow-hidden">
-                                  <div className="bg-accent-500 h-full rounded-full" style={{ width: `${details.score}%` }} />
+                                  <div className={cn("h-full rounded-full transition-all duration-500", getProgressBarColor(details.score))} style={{ width: `${details.score}%` }} />
                                 </div>
-                                <p className="text-[10px] text-text-secondary leading-relaxed">{details.reason}</p>
+                                <p className="text-[10px] text-text-secondary leading-relaxed font-medium">{details.reason}</p>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <div className="text-xs text-text-tertiary p-3 border border-dashed border-border rounded-xl bg-surface-secondary text-center">
+                          <div className="text-xs text-text-tertiary p-4 border border-dashed border-border rounded-2xl bg-surface-secondary/40 text-center">
                             Detailed scorecard not available. This lead was generated with legacy qualification details.
                           </div>
                         )}
@@ -1016,45 +1041,48 @@ export default function SessionDetailPage({
 
                       {/* AI Outreach Strategy Display */}
                       <div className="space-y-4">
-                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-1.5">
-                          <Bot className="w-4 h-4 text-text-tertiary" />
+                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2">
+                          <Bot className="w-4 h-4 text-text-secondary" />
                           Recommended Outreach Strategy
                         </h4>
                         
-                        <div className="p-4 border border-border rounded-xl bg-surface space-y-3.5">
-                          <div className="grid grid-cols-2 gap-4 text-xs">
+                        <div className="p-5 border border-border/50 rounded-2xl bg-surface shadow-sm space-y-4">
+                          <div className="grid grid-cols-2 gap-6 text-xs border-b border-border/40 pb-4">
                             <div>
-                              <span className="text-text-tertiary block mb-0.5">Contact Person</span>
+                              <span className="text-text-tertiary block mb-1 font-medium">Contact Person</span>
                               <span className="font-semibold text-text-primary flex items-center gap-1.5">
                                 {customContactName || "Hiring Team"}
                                 {customContactLinkedin && (
-                                  <a href={customContactLinkedin} target="_blank" rel="noreferrer" className="text-accent-500 hover:underline">
+                                  <a href={customContactLinkedin} target="_blank" rel="noreferrer" className="text-text-tertiary hover:text-accent-500 transition-colors">
                                     <ExternalLink className="w-3.5 h-3.5" />
                                   </a>
                                 )}
                               </span>
                             </div>
                             <div>
-                              <span className="text-text-tertiary block mb-0.5">Target Title</span>
+                              <span className="text-text-tertiary block mb-1 font-medium">Target Title</span>
                               <span className="font-semibold text-text-primary">{customContactTitle || "Engineering Director"}</span>
                             </div>
                             <div>
-                              <span className="text-text-tertiary block mb-0.5">Recommended Channel</span>
+                              <span className="text-text-tertiary block mb-1 font-medium">Recommended Channel</span>
                               <span className="font-semibold text-text-primary capitalize flex items-center gap-1.5">
-                                {customChannel === "email" ? "📧 Email" : customChannel === "linkedin" ? "💬 LinkedIn Connect" : customChannel === "careers_page" ? "💼 Careers Portal" : "🔗 Other"}
+                                {customChannel === "email" && "📧 Cold Email"}
+                                {customChannel === "linkedin" && "💬 LinkedIn Note"}
+                                {customChannel === "careers_page" && "💼 Careers Portal"}
+                                {customChannel === "other" && "🔗 Custom Outreach"}
                               </span>
                             </div>
                             <div>
-                              <span className="text-text-tertiary block mb-0.5">Response Probability</span>
-                              <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-text-tertiary block mb-1 font-medium">Response Probability</span>
+                              <div className="flex items-center gap-2 mt-0.5">
                                 <span className={cn(
-                                  "font-semibold",
-                                  customProbability >= 70 ? "text-success-600" : customProbability >= 45 ? "text-warning-600" : "text-danger-600"
+                                  "font-bold",
+                                  customProbability >= 80 ? "text-emerald-500" : customProbability >= 60 ? "text-amber-500" : "text-neutral-500"
                                 )}>{customProbability}%</span>
                                 <div className="w-16 bg-surface-tertiary h-1.5 rounded-full overflow-hidden shrink-0">
                                   <div className={cn(
-                                    "h-full rounded-full",
-                                    customProbability >= 70 ? "bg-success-500" : customProbability >= 45 ? "bg-warning-500" : "bg-danger-500"
+                                    "h-full rounded-full transition-all duration-300",
+                                    customProbability >= 80 ? "bg-emerald-500" : customProbability >= 60 ? "bg-amber-500" : "bg-neutral-500"
                                   )} style={{ width: `${customProbability}%` }} />
                                 </div>
                               </div>
@@ -1063,34 +1091,34 @@ export default function SessionDetailPage({
 
                           {strategy?.firstMethod && (
                             <div className="text-xs">
-                              <span className="text-text-tertiary block mb-0.5 font-medium">First Action Step</span>
-                              <p className="text-text-primary leading-relaxed bg-surface-secondary border border-border p-2 rounded-lg">{strategy.firstMethod}</p>
+                              <span className="text-text-tertiary block mb-1.5 font-medium">First Action Step</span>
+                              <p className="text-text-primary leading-relaxed bg-surface-secondary/70 border border-border/40 p-3 rounded-xl font-medium">{strategy.firstMethod}</p>
                             </div>
                           )}
 
                           {strategy?.strategyReason && (
                             <div className="text-xs">
-                              <span className="text-text-tertiary block mb-0.5 font-medium">Outreach Rationale</span>
-                              <p className="text-text-secondary leading-relaxed bg-surface-secondary border border-border p-2 rounded-lg italic">&ldquo;{strategy.strategyReason}&rdquo;</p>
+                              <span className="text-text-tertiary block mb-1.5 font-medium">Outreach Rationale</span>
+                              <p className="text-text-secondary leading-relaxed bg-surface-secondary/70 border border-border/40 p-3 rounded-xl italic font-medium">&ldquo;{strategy.strategyReason}&rdquo;</p>
                             </div>
                           )}
                         </div>
                       </div>
 
                       {/* Interactive Customizer Panel */}
-                      <div className="mt-8 pt-6 border-t border-border space-y-4">
-                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-1.5">
-                          <Sliders className="w-4 h-4 text-text-tertiary" />
+                      <div className="mt-8 pt-6 border-t border-border/50 space-y-5">
+                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2">
+                          <Sliders className="w-4 h-4 text-text-secondary" />
                           Refine Strategy Parameters
                         </h4>
 
-                        <div className="space-y-3.5">
-                          <div className="space-y-1">
+                        <div className="space-y-4">
+                          <div className="space-y-1.5">
                             <label className="block text-[11px] font-semibold text-text-secondary uppercase">Recommended Outreach Channel</label>
                             <select
                               value={customChannel}
                               onChange={(e) => setCustomChannel(e.target.value)}
-                              className="w-full text-xs bg-surface-secondary border border-border rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-500 cursor-pointer"
+                              className="w-full text-xs bg-surface-secondary border border-border/80 focus:border-accent-500 focus:ring-4 focus:ring-accent-500/5 transition-all rounded-xl px-4 py-2.5 text-text-primary focus:outline-none cursor-pointer font-medium"
                             >
                               <option value="email">📧 Personal Email Pitch</option>
                               <option value="linkedin">💬 LinkedIn Connection Note</option>
@@ -1099,38 +1127,38 @@ export default function SessionDetailPage({
                             </select>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
                               <label className="block text-[11px] font-semibold text-text-secondary uppercase">Contact Name</label>
                               <input
                                 type="text"
                                 value={customContactName}
                                 onChange={(e) => setCustomContactName(e.target.value)}
-                                className="w-full text-xs bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-text-primary focus:outline-none focus:border-accent-500"
+                                className="w-full text-xs bg-surface-secondary border border-border/80 focus:border-accent-500 focus:ring-4 focus:ring-accent-500/5 transition-all rounded-xl px-4 py-2.5 text-text-primary focus:outline-none font-medium"
                               />
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-1.5">
                               <label className="block text-[11px] font-semibold text-text-secondary uppercase">Contact Title</label>
                               <input
                                 type="text"
                                 value={customContactTitle}
                                 onChange={(e) => setCustomContactTitle(e.target.value)}
-                                className="w-full text-xs bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-text-primary focus:outline-none focus:border-accent-500"
+                                className="w-full text-xs bg-surface-secondary border border-border/80 focus:border-accent-500 focus:ring-4 focus:ring-accent-500/5 transition-all rounded-xl px-4 py-2.5 text-text-primary focus:outline-none font-medium"
                               />
                             </div>
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <label className="block text-[11px] font-semibold text-text-secondary uppercase">LinkedIn URL</label>
                             <input
                               type="text"
                               value={customContactLinkedin}
                               onChange={(e) => setCustomContactLinkedin(e.target.value)}
-                              className="w-full text-xs bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-text-primary focus:outline-none focus:border-accent-500"
+                              className="w-full text-xs bg-surface-secondary border border-border/80 focus:border-accent-500 focus:ring-4 focus:ring-accent-500/5 transition-all rounded-xl px-4 py-2.5 text-text-primary focus:outline-none font-mono"
                             />
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="space-y-2">
                             <div className="flex justify-between text-[11px] font-semibold text-text-secondary uppercase">
                               <span>Estimated Response Probability</span>
                               <span className="font-bold text-accent-500">{customProbability}%</span>
@@ -1141,28 +1169,28 @@ export default function SessionDetailPage({
                               max="100"
                               value={customProbability}
                               onChange={(e) => setCustomProbability(parseInt(e.target.value))}
-                              className="w-full accent-accent-500 cursor-pointer"
+                              className="w-full accent-neutral-800 dark:accent-neutral-200 cursor-pointer h-1 bg-surface-tertiary rounded-lg appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-neutral-900 dark:[&::-webkit-slider-thumb]:bg-neutral-100"
                             />
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <label className="block text-[11px] font-semibold text-text-secondary uppercase">Context to Reference</label>
                             <textarea
                               value={customContext}
                               onChange={(e) => setCustomContext(e.target.value)}
                               rows={3}
-                              className="w-full text-xs bg-surface-secondary border border-border rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-500 resize-none font-mono"
+                              className="w-full text-xs bg-surface-secondary border border-border/80 focus:border-accent-500 focus:ring-4 focus:ring-accent-500/5 transition-all rounded-xl px-4 py-2.5 text-text-primary focus:outline-none resize-none font-mono"
                               placeholder="Mention specific projects, stack elements, or recent milestones..."
                             />
                           </div>
                         </div>
 
-                        <div className="flex gap-2 justify-end pt-2">
+                        <div className="flex gap-2 justify-end pt-3">
                           <button
                             type="button"
                             onClick={() => handleSaveStrategy(lead)}
                             disabled={isUpdatingStrategy}
-                            className="px-4 py-2 bg-neutral-900 dark:bg-neutral-50 text-white dark:text-neutral-950 rounded-lg text-xs font-semibold hover:opacity-90 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer select-none"
+                            className="px-5 py-2.5 bg-neutral-950 dark:bg-neutral-50 text-white dark:text-neutral-950 rounded-xl text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer select-none shadow-sm"
                           >
                             {isUpdatingStrategy ? (
                               <Loader2 className="w-3.5 h-3.5 animate-spin" />
