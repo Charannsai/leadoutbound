@@ -230,7 +230,6 @@ Instructions:
   }).slice(0, 30);
 
   // Use Gemini to intelligently extract REAL company data from search results
-  const gemini = await getGeminiClient().catch(() => null);
   if (!gemini) {
     return parseSearchResultsManually(uniqueResults, role);
   }
