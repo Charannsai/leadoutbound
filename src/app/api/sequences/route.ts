@@ -6,9 +6,32 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const sessionId = searchParams.get("sessionId");
     const action = searchParams.get("action");
+    const search = searchParams.get("search") || "";
+    const status = searchParams.get("status") || "";
 
     if (!sessionId) {
-      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
+      // List all sequences
+      const where: Record<string, unknown> = {};
+      if (search) {
+        where.OR = [
+          { name: { contains: search } },
+          { searchQuery: { contains: search } },
+        ];
+      }
+      if (status) {
+        where.status = status;
+      }
+
+      const sessions = await prisma.session.findMany({
+        where,
+        orderBy: { updatedAt: "desc" },
+        include: {
+          _count: { select: { leads: true } },
+          template: { select: { name: true, category: true } },
+        },
+      });
+
+      return NextResponse.json(sessions);
     }
 
     if (action === "states") {
