@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     ).join("\n\n");
 
     const systemPrompt = `You are an AI research assistant for an outbound lead generation tool.
-Your job is to analyze the user's search query for finding job opportunities or outbound leads, evaluate if there are key parameters missing, and generate intelligent follow-up questions.
+Your job is to analyze the user's search query for finding candidates or outbound leads, evaluate if there are key parameters missing, and generate exactly ONE intelligent follow-up question at a time to narrow down the target profile.
 
 Key parameters we need to construct a target profile:
 1. Target Role/Designation (e.g. Software Engineer, Founder, Recruiter)
@@ -31,6 +31,10 @@ Key parameters we need to construct a target profile:
 3. Location / Remote preferences (e.g. Remote everywhere, US only, hybrid Bangalore)
 4. Company type / industry focus (e.g. Early-stage AI startups, healthcare SaaS)
 5. Ideal contact person (e.g. Founder, Head of Engineering, HR)
+
+If any critical information is missing to produce high-quality leads, formulate ONE specific follow-up question.
+Do NOT ask more than one question. The conversational refinement continues until you are confident you understand the objective.
+Also, determine the best data sources to search (e.g. "LinkedIn Profiles", "Google Search", "Startup Directories", "Hiring Platforms", "Company Careers Pages"). Combine them to maximize lead quality and coverage. Do not list source selection choices for the user; determine them automatically.
 
 Analyze the query and any answers the user gave to previous questions. Respond strictly with a JSON object in this format (no markdown blocks, no prefix/suffix):
 {
@@ -47,13 +51,10 @@ Analyze the query and any answers the user gave to previous questions. Respond s
       "key": "name_of_parameter_missing",
       "question": "Intelligent, direct question to ask the user"
     }
-  ],
-  "isComplete": true/false (true if we have enough info to trigger a scraping search, false if we need answers to critical questions)
-}
-
-Critical questions to resolve:
-- If remote preference or geographic restrictions are vague, ask.
-- Limit followUpQuestions to max 3 items. If all key parameters are reasonably understood, mark "isComplete" as true and leave "followUpQuestions" as empty.`;
+  ], // MUST contain AT MOST ONE question. If complete, this array should be empty.
+  "determinedSources": ["Source 1", "Source 2", ...], // List of 2-4 automatically determined best data sources to search
+  "isComplete": true/false // true if we have enough info to trigger a search, false if we need answers to critical questions.
+}`;
 
     const prompt = `User Query: "${query}"\n\nPrevious Q&A History:\n${answersContext || "None"}\n\nAnalyze and return JSON structure.`;
 
@@ -76,36 +77,53 @@ function getMockAnalysis(query: string, answers: any[] = []) {
   const q = query.toLowerCase();
   const answersText = answers.map(a => a.answer.toLowerCase()).join(" ");
 
-  const hasRole = q.includes("engineer") || q.includes("developer") || q.includes("sales") || q.includes("founder");
-  const hasExperience = q.includes("year") || q.includes("yoe") || q.includes("senior") || q.includes("junior");
-  const hasLocation = q.includes("remote") || q.includes("india") || q.includes("europe") || q.includes("us");
+  const hasRole = q.includes("engineer") || q.includes("developer") || q.includes("sales") || q.includes("founder") || q.includes("founder") || q.includes("saas") || q.includes("startup") || q.includes("startup") || q.includes("healthcare") || q.includes("companies");
+  const hasExperience = q.includes("year") || q.includes("yoe") || q.includes("senior") || q.includes("junior") || q.includes("early");
+  const hasLocation = q.includes("remote") || q.includes("india") || q.includes("europe") || q.includes("us") || answersText.includes("remote") || answersText.includes("location");
 
   const followUpQuestions = [];
+  const determinedSources = ["Google Search", "Greenhouse Board", "Lever Listings", "Ashby Careers"];
   
   if (!hasLocation && !answersText.includes("remote") && !answersText.includes("location")) {
     followUpQuestions.push({
       key: "location",
-      question: "Are you looking for fully remote opportunities worldwide, or are there specific country limitations (e.g. India only)?"
+      question: "Are you looking for remote opportunities globally, or are there specific location limits (e.g. US/India only)?"
+    });
+  } else if (!answersText.includes("startup") && !answersText.includes("established") && !q.includes("startup") && !q.includes("founder")) {
+    followUpQuestions.push({
+      key: "companySize",
+      question: "Would you like to prioritize early-stage startups (under 50 people) or more established companies?"
+    });
+  } else if (!answersText.includes("founder") && !answersText.includes("recruiter") && !answersText.includes("hiring") && !answersText.includes("leader")) {
+    followUpQuestions.push({
+      key: "contactPerson",
+      question: "Would you prefer to reach out to founders directly, hiring managers, or recruitment leaders?"
     });
   }
 
-  if (followUpQuestions.length === 0 && !answersText.includes("startup") && !answersText.includes("enterprise")) {
-    followUpQuestions.push({
-      key: "companySize",
-      question: "Do you prefer early-stage startups (under 50 people), mid-sized SaaS companies, or large-scale enterprises?"
-    });
+  // Determine dynamic sources based on query
+  if (q.includes("founder") || q.includes("startup") || q.includes("saas")) {
+    determinedSources.unshift("LinkedIn Profiles");
+    determinedSources.push("YCombinator Directory");
+  } else if (q.includes("healthcare") || q.includes("medical")) {
+    determinedSources.unshift("Crunchbase");
+    determinedSources.push("Specialized Healthcare Directories");
   }
+
+  // Keep unique sources, slice to 4
+  const uniqueSources = Array.from(new Set(determinedSources)).slice(0, 4);
 
   return {
     analyzedQuery: {
-      role: hasRole ? "Software Engineer" : null,
-      experience: hasExperience ? "2 Years" : null,
+      role: hasRole ? (q.includes("founder") ? "Founder" : q.includes("sales") ? "Sales Executive" : "Software Engineer") : null,
+      experience: hasExperience ? "Senior / Mid" : "Any",
       location: hasLocation ? "Remote" : null,
-      industry: "Technology",
-      companyType: null,
-      contactPerson: "Founder / Hiring Manager"
+      industry: q.includes("healthcare") ? "Healthcare" : q.includes("saas") ? "SaaS" : "AI / Technology",
+      companyType: q.includes("startup") ? "Startup" : null,
+      contactPerson: q.includes("founder") ? "Founder" : "Hiring Manager"
     },
-    followUpQuestions,
-    isComplete: followUpQuestions.length === 0 || answers.length >= 2
+    followUpQuestions: followUpQuestions.slice(0, 1), // strictly 1 question at a time
+    determinedSources: uniqueSources,
+    isComplete: followUpQuestions.length === 0 || answers.length >= 3
   };
 }
