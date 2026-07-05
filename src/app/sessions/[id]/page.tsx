@@ -9,7 +9,6 @@ import { StatusBadge } from "@/components/common/status-badge";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { cn } from "@/lib/utils";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 8 },
