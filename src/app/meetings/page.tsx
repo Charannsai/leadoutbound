@@ -48,7 +48,7 @@ export default function MeetingsPage() {
   const { data: leads = [] } = useQuery<any[]>({
     queryKey: ["leads-dropdown"],
     queryFn: async () => {
-      const res = await fetch("/api/leads");
+      const res = await fetch("/api/leads?limit=all");
       if (!res.ok) return [];
       return res.json();
     }

@@ -66,7 +66,7 @@ export default function DealsPage() {
   const { data: leads = [] } = useQuery<any[]>({
     queryKey: ["leads-deals-dropdown"],
     queryFn: async () => {
-      const res = await fetch("/api/leads");
+      const res = await fetch("/api/leads?limit=all");
       if (!res.ok) return [];
       return res.json();
     }
