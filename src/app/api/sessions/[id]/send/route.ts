@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendGmailEmail } from "@/lib/gmail";
 import { after } from "next/server";
+import fs from "node:fs";
 
 export async function POST(
   request: NextRequest,
@@ -59,7 +60,6 @@ export async function POST(
                   where: { id: att.id }
                 });
                 if (kFile && kFile.filepath) {
-                  const fs = require("node:fs");
                   if (fs.existsSync(kFile.filepath)) {
                     const fileBuffer = fs.readFileSync(kFile.filepath);
                     const base64 = fileBuffer.toString("base64");
