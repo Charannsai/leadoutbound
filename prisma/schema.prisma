@@ -22,6 +22,8 @@ model Session {
 
   leads      Lead[]
   template   Template? @relation(fields: [templateId], references: [id])
+  steps      SequenceStep[]
+  leadStates LeadSequenceState[]
 }
 
 model Lead {
@@ -50,6 +52,13 @@ model Lead {
   session  Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   emails   LeadEmail[]
   replies  Reply[]
+
+  sequenceStates LeadSequenceState[]
+  callLogs       CallLog[]
+  tasks          Task[]
+  listLeads      ListLead[]
+  deals          Deal[]
+  meetings       Meeting[]
 }
 
 model LeadEmail {
@@ -138,4 +147,126 @@ model Settings {
   id    String @id @default(cuid())
   key   String @unique
   value String
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  name      String
+  filters   String   // JSON string of filters
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomList {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leads       ListLead[]
+}
+
+model ListLead {
+  id         String   @id @default(cuid())
+  listId     String
+  leadId     String
+  createdAt  DateTime @default(now())
+
+  list       CustomList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  lead       Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, leadId])
+}
+
+model SequenceStep {
+  id          String   @id @default(cuid())
+  sessionId   String
+  stepNumber  Int
+  type        String   // email_auto, email_manual, linkedin_connect, call, task
+  templateId  String?
+  delayDays   Int      @default(0)
+  instructions String?
+  subject     String?
+  body        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model LeadSequenceState {
+  id                 String   @id @default(cuid())
+  leadId             String
+  sessionId          String
+  currentStepNumber  Int      @default(1)
+  status             String   @default("active") // active, paused, completed, replied
+  nextRunAt          DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  lead               Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  session            Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, sessionId])
+}
+
+model CallLog {
+  id        String   @id @default(cuid())
+  leadId    String
+  outcome   String   // connected, busy, no_answer, meeting_scheduled, left_voicemail
+  notes     String?
+  duration  Int      @default(0) // in seconds
+  createdAt DateTime @default(now())
+
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  leadId      String
+  type        String   // email_manual, call, linkedin, task
+  title       String
+  description String?
+  dueDate     DateTime @default(now())
+  status      String   @default("pending") // pending, completed, skipped
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Deal {
+  id        String   @id @default(cuid())
+  name      String
+  amount    Float    @default(0.0)
+  stage     String   @default("prospecting") // prospecting, qualified, proposal, won, lost
+  leadId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Meeting {
+  id        String   @id @default(cuid())
+  title     String
+  startTime DateTime
+  endTime   DateTime
+  leadId    String
+  status    String   @default("scheduled") // scheduled, completed, cancelled
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Workflow {
+  id        String   @id @default(cuid())
+  name      String
+  trigger   String   // lead_replied, deal_created, call_logged, email_opened
+  action    String   // move_deal, create_task, send_slack, update_lead
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
