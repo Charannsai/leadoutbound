@@ -26,9 +26,9 @@
   --color-accent-100: #dbeafe;
   --color-accent-200: #bfdbfe;
   --color-accent-300: #93c5fd;
-  --color-accent-400: #60a5fa;
-  --color-accent-500: #104bbf;
-  --color-accent-600: #0d3d9c;
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
   --color-accent-700: #0b307d;
   --color-accent-800: #08245e;
   --color-accent-900: #1e3a8a;
@@ -78,6 +78,8 @@
   --color-sidebar-active: var(--sidebar-active);
   --color-sidebar-active-bg: var(--sidebar-active-bg);
   --color-sidebar-active-text: var(--sidebar-active-text);
+  --color-sidebar-inactive-text: var(--sidebar-inactive-text);
+  --color-sidebar-hover-text: var(--sidebar-hover-text);
 }
 
 /* ===== Light Theme ===== */
@@ -93,12 +95,19 @@
   --text-secondary: #475569;
   --text-tertiary: #64748b;
   --text-inverse: #ffffff;
-  --sidebar-bg: #0f172a;
-  --sidebar-border: #1e293b;
-  --sidebar-hover: #1e293b;
-  --sidebar-active: #104bbf;
-  --sidebar-active-bg: #1e293b; /* graphite dark tone for light mode sidebar (dark theme sidebar is default in Apollo) */
-  --sidebar-active-text: #f9fafb;
+  
+  --accent-400: #4b5563;
+  --accent-500: #1d1d1d;
+  --accent-600: #333333;
+  
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --sidebar-hover: #f1f5f9;
+  --sidebar-active: #1d1d1d;
+  --sidebar-active-bg: #1d1d1d;
+  --sidebar-active-text: #ffffff;
+  --sidebar-inactive-text: #475569;
+  --sidebar-hover-text: #0f172a;
 }
 
 /* ===== Dark Theme ===== */
@@ -114,12 +123,19 @@
   --text-secondary: #9ca3af;
   --text-tertiary: #4b5563;
   --text-inverse: #030712;
+  
+  --accent-400: #9ca3af;
+  --accent-500: #ffffff;
+  --accent-600: #f3f4f6;
+  
   --sidebar-bg: #030712;
   --sidebar-border: #111827;
   --sidebar-hover: #111827;
-  --sidebar-active: #104bbf;
-  --sidebar-active-bg: #1f2937; /* graphite hover dark highlight */
-  --sidebar-active-text: #f9fafb;
+  --sidebar-active: #ffffff;
+  --sidebar-active-bg: #ffffff;
+  --sidebar-active-text: #1d1d1d;
+  --sidebar-inactive-text: #9ca3af;
+  --sidebar-hover-text: #ffffff;
 }
 
 /* ===== Base Styles ===== */
