@@ -59,6 +59,12 @@ model Lead {
   listLeads      ListLead[]
   deals          Deal[]
   meetings       Meeting[]
+
+  @@index([companyName])
+  @@index([industry])
+  @@index([location])
+  @@index([pipelineStage])
+  @@index([sessionId])
 }
 
 model LeadEmail {
