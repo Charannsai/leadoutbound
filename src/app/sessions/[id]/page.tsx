@@ -8,8 +8,39 @@ import { Modal } from "@/components/common/modal";
 import { StatusBadge } from "@/components/common/status-badge";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-
+import { cn } from "@/lib/utils";
+import {
+  ArrowLeft,
+  Users,
+  Mail,
+  MessageSquare,
+  Clock,
+  Edit3,
+  Check,
+  X,
+  FileText,
+  BarChart3,
+  Play,
+  Send,
+  Loader2,
+  Trash2,
+  CheckCircle,
+  ExternalLink,
+  ChevronRight,
+  RefreshCw,
+  Award,
+  Shield,
+  AlertCircle,
+  Briefcase,
+  Building,
+  Activity,
+  Info,
+  Sliders,
+  Save,
+  Bot,
+  Target,
+  Sparkles
+} from "lucide-react";
 const fadeUp = {
   hidden: { opacity: 0, y: 8 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
