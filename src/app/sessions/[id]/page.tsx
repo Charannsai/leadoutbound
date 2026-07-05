@@ -97,8 +97,83 @@ export default function SessionDetailPage({
   const [selectedAttachments, setSelectedAttachments] = useState<Array<{ id: string; name: string }>>([]);
   const [isSavingEmail, setIsSavingEmail] = useState(false);
   const [copiedNoteId, setCopiedNoteId] = useState<string | null>(null);
-
+  const [discardLeadId, setDiscardLeadId] = useState<string | null>(null);
   
+  // Leads tab filter view: "active" (qualified/personalized/etc.) vs "discarded" (rejected)
+  const [leadsView, setLeadsView] = useState<"active" | "discarded">("active");
+  // Active Lead Details Drawer state
+  const [activeLeadDetailsId, setActiveLeadDetailsId] = useState<string | null>(null);
+  
+  // Custom strategy form states
+  const [customChannel, setCustomChannel] = useState<string>("");
+  const [customContactName, setCustomContactName] = useState<string>("");
+  const [customContactTitle, setCustomContactTitle] = useState<string>("");
+  const [customContactLinkedin, setCustomContactLinkedin] = useState<string>("");
+  const [customProbability, setCustomProbability] = useState<number>(50);
+  const [customContext, setCustomContext] = useState<string>("");
+  const [isUpdatingStrategy, setIsUpdatingStrategy] = useState(false);
+
+  useEffect(() => {
+    if (activeLeadDetailsId && session?.leads) {
+      const activeLead = session.leads.find((l: any) => l.id === activeLeadDetailsId);
+      if (activeLead) {
+        let strat = null;
+        if (activeLead.outreachStrategy) {
+          try {
+            strat = JSON.parse(activeLead.outreachStrategy);
+          } catch (e) {
+            console.error("Failed to parse strategy", e);
+          }
+        }
+        setCustomChannel(strat?.recommendedChannel || activeLead.session?.outboundChannel || "email");
+        setCustomContactName(activeLead.contactName || "");
+        setCustomContactTitle(activeLead.contactTitle || "");
+        setCustomContactLinkedin(activeLead.contactLinkedin || "");
+        setCustomProbability(strat?.responseProbability ?? 50);
+        setCustomContext(strat?.contextToReference || "");
+      }
+    }
+  }, [activeLeadDetailsId, session]);
+
+  const handleSaveStrategy = async (lead: Lead) => {
+    setIsUpdatingStrategy(true);
+    try {
+      let strat = {};
+      if (lead.outreachStrategy) {
+        try { strat = JSON.parse(lead.outreachStrategy); } catch {}
+      }
+      const updatedStrategy = {
+        ...strat,
+        recommendedChannel: customChannel,
+        bestContactPerson: customContactName,
+        bestContactTitle: customContactTitle,
+        bestContactLinkedin: customContactLinkedin,
+        responseProbability: customProbability,
+        contextToReference: customContext,
+      };
+
+      const res = await fetch(`/api/leads/${lead.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contactName: customContactName,
+          contactTitle: customContactTitle,
+          contactLinkedin: customContactLinkedin,
+          applyDirect: customChannel === "careers_page",
+          outreachStrategy: JSON.stringify(updatedStrategy),
+        }),
+      });
+
+      if (res.ok) {
+        queryClient.invalidateQueries({ queryKey: ["session", session.id] });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUpdatingStrategy(false);
+    }
+  };
+
   const { data: kbData } = useQuery<{ entries: any[]; files: any[] }>({
     queryKey: ["knowledge"],
     queryFn: async () => {
