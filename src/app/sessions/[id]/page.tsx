@@ -1180,6 +1180,8 @@ export default function SessionDetailPage({
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
 
 function FunnelRow({ label, count, percent }: { label: string; count: number; percent: number }) {
   return (
