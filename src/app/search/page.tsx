@@ -23,6 +23,7 @@ import { LeadRowSkeleton } from "@/components/common/skeletons";
 interface Question {
   key: string;
   question: string;
+  options?: string[];
 }
 
 interface Answer {
@@ -115,11 +116,10 @@ export default function SearchPage() {
     }
   };
 
-  const handleAnswerSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentAnswer.trim() || !currentQuestion) return;
+  const submitAnswer = async (ansText: string) => {
+    if (!ansText.trim() || !currentQuestion) return;
 
-    const userAnsText = currentAnswer;
+    const userAnsText = ansText;
     const activeQ = currentQuestion;
     
     // Add to chat history immediately
@@ -169,6 +169,15 @@ export default function SearchPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAnswerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    submitAnswer(currentAnswer);
+  };
+
+  const handleSelectOption = (optText: string) => {
+    submitAnswer(optText);
   };
 
   const handleTriggerScraping = async () => {
@@ -378,6 +387,22 @@ export default function SearchPage() {
 
             {/* Answer Input Block */}
             <form onSubmit={handleAnswerSubmit} className="pt-3 border-t border-border shrink-0 space-y-3">
+              {currentQuestion?.options && currentQuestion.options.length > 0 && (
+                <div className="flex flex-wrap gap-2 pb-1.5 animate-in fade-in-50 slide-in-from-bottom-2 duration-200">
+                  {currentQuestion.options.map((opt, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      disabled={isLoading}
+                      onClick={() => handleSelectOption(opt)}
+                      className="px-3.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-xs font-semibold text-text-secondary hover:text-text-primary transition-all cursor-pointer shadow-sm disabled:opacity-50"
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="flex items-center gap-3 pl-5 pr-2.5 py-2 rounded-full border border-border bg-surface shadow-sm focus-within:ring-4 focus-within:ring-accent-500/5 focus-within:border-accent-500 transition-all duration-200">
                 <input
                   type="text"

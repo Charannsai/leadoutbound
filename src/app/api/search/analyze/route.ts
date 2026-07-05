@@ -49,7 +49,8 @@ Analyze the query and any answers the user gave to previous questions. Respond s
   "followUpQuestions": [
     {
       "key": "name_of_parameter_missing",
-      "question": "Intelligent, direct question to ask the user"
+      "question": "Intelligent, direct question to ask the user",
+      "options": ["Suggested Option 1", "Suggested Option 2", "Suggested Option 3"] // Provide 2-3 smart suggested answers based on the question context
     }
   ], // MUST contain AT MOST ONE question. If complete, this array should be empty.
   "determinedSources": ["Source 1", "Source 2", ...], // List of 2-4 automatically determined best data sources to search
@@ -87,17 +88,20 @@ function getMockAnalysis(query: string, answers: any[] = []) {
   if (!hasLocation && !answersText.includes("remote") && !answersText.includes("location")) {
     followUpQuestions.push({
       key: "location",
-      question: "Are you looking for remote opportunities globally, or are there specific location limits (e.g. US/India only)?"
+      question: "Are you looking for remote opportunities globally, or are there specific location limits (e.g. US/India only)?",
+      options: ["Remote Globally", "United States Only", "India Only"]
     });
   } else if (!answersText.includes("startup") && !answersText.includes("established") && !q.includes("startup") && !q.includes("founder")) {
     followUpQuestions.push({
       key: "companySize",
-      question: "Would you like to prioritize early-stage startups (under 50 people) or more established companies?"
+      question: "Would you like to prioritize early-stage startups (under 50 people) or more established companies?",
+      options: ["Early-stage Startups", "Established Tech Scale-ups", "Any Company Size"]
     });
   } else if (!answersText.includes("founder") && !answersText.includes("recruiter") && !answersText.includes("hiring") && !answersText.includes("leader")) {
     followUpQuestions.push({
       key: "contactPerson",
-      question: "Would you prefer to reach out to founders directly, hiring managers, or recruitment leaders?"
+      question: "Would you prefer to reach out to founders directly, hiring managers, or recruitment leaders?",
+      options: ["Founders & Co-founders", "Engineering Managers / Directors", "Recruiting / HR Teams"]
     });
   }
 
