@@ -60,7 +60,7 @@ Return ONLY valid JSON. Do not include markdown code block syntax or introductio
 
         try {
           const res = await gemini.generateContent(prompt, "Return enrichment JSON. No extra text.");
-          enrichedData = safeParseJson(res);
+          enrichedData = safeParseJson(res, null);
         } catch (e) {
           console.error("Gemini enrichment failed:", e);
         }
@@ -78,7 +78,7 @@ Return ONLY valid JSON. Do not include markdown code block syntax or introductio
           industry: enrichedData.industry || lead.industry,
           location: enrichedData.location || lead.location,
           rawData: JSON.stringify({
-            ...safeParseJson(lead.rawData || "{}"),
+            ...safeParseJson(lead.rawData || "{}", {}),
             techStack: enrichedData.techStack,
             fundingStage: enrichedData.fundingStage,
             estimatedRevenue: enrichedData.estimatedRevenue,
@@ -117,7 +117,7 @@ Return ONLY valid JSON.`;
 
         try {
           const res = await gemini.generateContent(prompt, "Return JSON.");
-          enrichedData = safeParseJson(res);
+          enrichedData = safeParseJson(res, null);
         } catch (e) {
           console.error("Gemini lookup failed:", e);
         }

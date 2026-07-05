@@ -16,7 +16,10 @@ import {
   Zap,
   Mail,
   MessageSquare,
-  Clock
+  Clock,
+  TrendingUp,
+  Check,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StatusBadge } from "@/components/common/status-badge";
