@@ -1072,6 +1072,8 @@ export const LeadScalarFieldEnum = {
   source: 'source',
   qualificationScore: 'qualificationScore',
   qualificationReason: 'qualificationReason',
+  qualificationReport: 'qualificationReport',
+  outreachStrategy: 'outreachStrategy',
   applyDirect: 'applyDirect',
   pipelineStage: 'pipelineStage',
   rawData: 'rawData',

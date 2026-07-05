@@ -49,6 +49,8 @@ export type LeadMinAggregateOutputType = {
   source: string | null
   qualificationScore: number | null
   qualificationReason: string | null
+  qualificationReport: string | null
+  outreachStrategy: string | null
   applyDirect: boolean | null
   pipelineStage: string | null
   rawData: string | null
@@ -71,6 +73,8 @@ export type LeadMaxAggregateOutputType = {
   source: string | null
   qualificationScore: number | null
   qualificationReason: string | null
+  qualificationReport: string | null
+  outreachStrategy: string | null
   applyDirect: boolean | null
   pipelineStage: string | null
   rawData: string | null
@@ -93,6 +97,8 @@ export type LeadCountAggregateOutputType = {
   source: number
   qualificationScore: number
   qualificationReason: number
+  qualificationReport: number
+  outreachStrategy: number
   applyDirect: number
   pipelineStage: number
   rawData: number
@@ -125,6 +131,8 @@ export type LeadMinAggregateInputType = {
   source?: true
   qualificationScore?: true
   qualificationReason?: true
+  qualificationReport?: true
+  outreachStrategy?: true
   applyDirect?: true
   pipelineStage?: true
   rawData?: true
@@ -147,6 +155,8 @@ export type LeadMaxAggregateInputType = {
   source?: true
   qualificationScore?: true
   qualificationReason?: true
+  qualificationReport?: true
+  outreachStrategy?: true
   applyDirect?: true
   pipelineStage?: true
   rawData?: true
@@ -169,6 +179,8 @@ export type LeadCountAggregateInputType = {
   source?: true
   qualificationScore?: true
   qualificationReason?: true
+  qualificationReport?: true
+  outreachStrategy?: true
   applyDirect?: true
   pipelineStage?: true
   rawData?: true
@@ -278,6 +290,8 @@ export type LeadGroupByOutputType = {
   source: string | null
   qualificationScore: number | null
   qualificationReason: string | null
+  qualificationReport: string | null
+  outreachStrategy: string | null
   applyDirect: boolean
   pipelineStage: string
   rawData: string | null
@@ -323,6 +337,8 @@ export type LeadWhereInput = {
   source?: Prisma.StringNullableFilter<"Lead"> | string | null
   qualificationScore?: Prisma.FloatNullableFilter<"Lead"> | number | null
   qualificationReason?: Prisma.StringNullableFilter<"Lead"> | string | null
+  qualificationReport?: Prisma.StringNullableFilter<"Lead"> | string | null
+  outreachStrategy?: Prisma.StringNullableFilter<"Lead"> | string | null
   applyDirect?: Prisma.BoolFilter<"Lead"> | boolean
   pipelineStage?: Prisma.StringFilter<"Lead"> | string
   rawData?: Prisma.StringNullableFilter<"Lead"> | string | null
@@ -348,6 +364,8 @@ export type LeadOrderByWithRelationInput = {
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   qualificationScore?: Prisma.SortOrderInput | Prisma.SortOrder
   qualificationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  qualificationReport?: Prisma.SortOrderInput | Prisma.SortOrder
+  outreachStrategy?: Prisma.SortOrderInput | Prisma.SortOrder
   applyDirect?: Prisma.SortOrder
   pipelineStage?: Prisma.SortOrder
   rawData?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -376,6 +394,8 @@ export type LeadWhereUniqueInput = Prisma.AtLeast<{
   source?: Prisma.StringNullableFilter<"Lead"> | string | null
   qualificationScore?: Prisma.FloatNullableFilter<"Lead"> | number | null
   qualificationReason?: Prisma.StringNullableFilter<"Lead"> | string | null
+  qualificationReport?: Prisma.StringNullableFilter<"Lead"> | string | null
+  outreachStrategy?: Prisma.StringNullableFilter<"Lead"> | string | null
   applyDirect?: Prisma.BoolFilter<"Lead"> | boolean
   pipelineStage?: Prisma.StringFilter<"Lead"> | string
   rawData?: Prisma.StringNullableFilter<"Lead"> | string | null
@@ -401,6 +421,8 @@ export type LeadOrderByWithAggregationInput = {
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   qualificationScore?: Prisma.SortOrderInput | Prisma.SortOrder
   qualificationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  qualificationReport?: Prisma.SortOrderInput | Prisma.SortOrder
+  outreachStrategy?: Prisma.SortOrderInput | Prisma.SortOrder
   applyDirect?: Prisma.SortOrder
   pipelineStage?: Prisma.SortOrder
   rawData?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -431,6 +453,8 @@ export type LeadScalarWhereWithAggregatesInput = {
   source?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
   qualificationScore?: Prisma.FloatNullableWithAggregatesFilter<"Lead"> | number | null
   qualificationReason?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  qualificationReport?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  outreachStrategy?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
   applyDirect?: Prisma.BoolWithAggregatesFilter<"Lead"> | boolean
   pipelineStage?: Prisma.StringWithAggregatesFilter<"Lead"> | string
   rawData?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
@@ -452,6 +476,8 @@ export type LeadCreateInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -477,6 +503,8 @@ export type LeadUncheckedCreateInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -500,6 +528,8 @@ export type LeadUpdateInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -525,6 +555,8 @@ export type LeadUncheckedUpdateInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -549,6 +581,8 @@ export type LeadCreateManyInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -570,6 +604,8 @@ export type LeadUpdateManyMutationInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -592,6 +628,8 @@ export type LeadUncheckedUpdateManyInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -624,6 +662,8 @@ export type LeadCountOrderByAggregateInput = {
   source?: Prisma.SortOrder
   qualificationScore?: Prisma.SortOrder
   qualificationReason?: Prisma.SortOrder
+  qualificationReport?: Prisma.SortOrder
+  outreachStrategy?: Prisma.SortOrder
   applyDirect?: Prisma.SortOrder
   pipelineStage?: Prisma.SortOrder
   rawData?: Prisma.SortOrder
@@ -650,6 +690,8 @@ export type LeadMaxOrderByAggregateInput = {
   source?: Prisma.SortOrder
   qualificationScore?: Prisma.SortOrder
   qualificationReason?: Prisma.SortOrder
+  qualificationReport?: Prisma.SortOrder
+  outreachStrategy?: Prisma.SortOrder
   applyDirect?: Prisma.SortOrder
   pipelineStage?: Prisma.SortOrder
   rawData?: Prisma.SortOrder
@@ -672,6 +714,8 @@ export type LeadMinOrderByAggregateInput = {
   source?: Prisma.SortOrder
   qualificationScore?: Prisma.SortOrder
   qualificationReason?: Prisma.SortOrder
+  qualificationReport?: Prisma.SortOrder
+  outreachStrategy?: Prisma.SortOrder
   applyDirect?: Prisma.SortOrder
   pipelineStage?: Prisma.SortOrder
   rawData?: Prisma.SortOrder
@@ -784,6 +828,8 @@ export type LeadCreateWithoutSessionInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -807,6 +853,8 @@ export type LeadUncheckedCreateWithoutSessionInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -859,6 +907,8 @@ export type LeadScalarWhereInput = {
   source?: Prisma.StringNullableFilter<"Lead"> | string | null
   qualificationScore?: Prisma.FloatNullableFilter<"Lead"> | number | null
   qualificationReason?: Prisma.StringNullableFilter<"Lead"> | string | null
+  qualificationReport?: Prisma.StringNullableFilter<"Lead"> | string | null
+  outreachStrategy?: Prisma.StringNullableFilter<"Lead"> | string | null
   applyDirect?: Prisma.BoolFilter<"Lead"> | boolean
   pipelineStage?: Prisma.StringFilter<"Lead"> | string
   rawData?: Prisma.StringNullableFilter<"Lead"> | string | null
@@ -880,6 +930,8 @@ export type LeadCreateWithoutEmailsInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -904,6 +956,8 @@ export type LeadUncheckedCreateWithoutEmailsInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -942,6 +996,8 @@ export type LeadUpdateWithoutEmailsInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -966,6 +1022,8 @@ export type LeadUncheckedUpdateWithoutEmailsInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -988,6 +1046,8 @@ export type LeadCreateWithoutRepliesInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -1012,6 +1072,8 @@ export type LeadUncheckedCreateWithoutRepliesInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -1050,6 +1112,8 @@ export type LeadUpdateWithoutRepliesInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1074,6 +1138,8 @@ export type LeadUncheckedUpdateWithoutRepliesInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1096,6 +1162,8 @@ export type LeadCreateManySessionInput = {
   source?: string | null
   qualificationScore?: number | null
   qualificationReason?: string | null
+  qualificationReport?: string | null
+  outreachStrategy?: string | null
   applyDirect?: boolean
   pipelineStage?: string
   rawData?: string | null
@@ -1117,6 +1185,8 @@ export type LeadUpdateWithoutSessionInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1140,6 +1210,8 @@ export type LeadUncheckedUpdateWithoutSessionInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1163,6 +1235,8 @@ export type LeadUncheckedUpdateManyWithoutSessionInput = {
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qualificationScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   qualificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qualificationReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outreachStrategy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   applyDirect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pipelineStage?: Prisma.StringFieldUpdateOperationsInput | string
   rawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1225,6 +1299,8 @@ export type LeadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   source?: boolean
   qualificationScore?: boolean
   qualificationReason?: boolean
+  qualificationReport?: boolean
+  outreachStrategy?: boolean
   applyDirect?: boolean
   pipelineStage?: boolean
   rawData?: boolean
@@ -1251,6 +1327,8 @@ export type LeadSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   source?: boolean
   qualificationScore?: boolean
   qualificationReason?: boolean
+  qualificationReport?: boolean
+  outreachStrategy?: boolean
   applyDirect?: boolean
   pipelineStage?: boolean
   rawData?: boolean
@@ -1274,6 +1352,8 @@ export type LeadSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   source?: boolean
   qualificationScore?: boolean
   qualificationReason?: boolean
+  qualificationReport?: boolean
+  outreachStrategy?: boolean
   applyDirect?: boolean
   pipelineStage?: boolean
   rawData?: boolean
@@ -1297,6 +1377,8 @@ export type LeadSelectScalar = {
   source?: boolean
   qualificationScore?: boolean
   qualificationReason?: boolean
+  qualificationReport?: boolean
+  outreachStrategy?: boolean
   applyDirect?: boolean
   pipelineStage?: boolean
   rawData?: boolean
@@ -1304,7 +1386,7 @@ export type LeadSelectScalar = {
   updatedAt?: boolean
 }
 
-export type LeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "companyName" | "companyWebsite" | "companySize" | "industry" | "location" | "contactName" | "contactEmail" | "contactTitle" | "contactLinkedin" | "source" | "qualificationScore" | "qualificationReason" | "applyDirect" | "pipelineStage" | "rawData" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
+export type LeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "companyName" | "companyWebsite" | "companySize" | "industry" | "location" | "contactName" | "contactEmail" | "contactTitle" | "contactLinkedin" | "source" | "qualificationScore" | "qualificationReason" | "qualificationReport" | "outreachStrategy" | "applyDirect" | "pipelineStage" | "rawData" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
 export type LeadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   emails?: boolean | Prisma.Lead$emailsArgs<ExtArgs>
@@ -1340,6 +1422,8 @@ export type $LeadPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     source: string | null
     qualificationScore: number | null
     qualificationReason: string | null
+    qualificationReport: string | null
+    outreachStrategy: string | null
     applyDirect: boolean
     pipelineStage: string
     rawData: string | null
@@ -1785,6 +1869,8 @@ export interface LeadFieldRefs {
   readonly source: Prisma.FieldRef<"Lead", 'String'>
   readonly qualificationScore: Prisma.FieldRef<"Lead", 'Float'>
   readonly qualificationReason: Prisma.FieldRef<"Lead", 'String'>
+  readonly qualificationReport: Prisma.FieldRef<"Lead", 'String'>
+  readonly outreachStrategy: Prisma.FieldRef<"Lead", 'String'>
   readonly applyDirect: Prisma.FieldRef<"Lead", 'Boolean'>
   readonly pipelineStage: Prisma.FieldRef<"Lead", 'String'>
   readonly rawData: Prisma.FieldRef<"Lead", 'String'>
