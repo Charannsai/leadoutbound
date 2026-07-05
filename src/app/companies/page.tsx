@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import {
@@ -16,7 +16,9 @@ import {
   ArrowRight,
   TrendingUp,
   MapPin,
-  Building
+  Building,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,15 +30,26 @@ export default function CompaniesPage() {
   const [sizeFilter, setSizeFilter] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
+  // Pagination State
+  const [page, setPage] = useState(1);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, location, industry, sizeFilter]);
+
   // Fetch leads to extract companies
   const { data: leads = [], isLoading } = useQuery<any[]>({
-    queryKey: ["companies-list", search, location, industry, sizeFilter.join(",")],
+    queryKey: ["companies-list", search, location, industry, sizeFilter.join(","), page],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       if (location) params.set("location", location);
       if (industry) params.set("industry", industry);
       if (sizeFilter.length > 0) params.set("companySize", sizeFilter.join(","));
+
+      params.set("page", page.toString());
+      params.set("limit", "50");
 
       const res = await fetch(`/api/leads?${params}`);
       if (!res.ok) throw new Error("Failed to fetch companies data");
@@ -280,6 +293,33 @@ export default function CompaniesPage() {
               </table>
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {leads.length > 0 && (
+            <div className="flex items-center justify-between px-4 py-2.5 border-t border-border bg-surface-secondary/20 shrink-0">
+              <span className="text-[10px] text-text-secondary">
+                Page {page}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  disabled={page === 1}
+                  onClick={() => { setPage(prev => Math.max(1, prev - 1)); }}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-surface-secondary border border-border text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:text-text-primary text-[10px] font-bold rounded-lg shadow-sm transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  Previous
+                </button>
+                <button
+                  disabled={leads.length < 50}
+                  onClick={() => { setPage(prev => prev + 1); }}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-surface-secondary border border-border text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:text-text-primary text-[10px] font-bold rounded-lg shadow-sm transition-colors cursor-pointer"
+                >
+                  Next
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
