@@ -10,43 +10,55 @@
 
   /* Neutral Scale (Light Mode Base) */
   --color-neutral-50: #fafafa;
-  --color-neutral-100: #f4f4f5;
-  --color-neutral-200: #e4e4e7;
-  --color-neutral-300: #d4d4d8;
-  --color-neutral-400: #a1a1aa;
-  --color-neutral-500: #71717a;
-  --color-neutral-600: #52525b;
-  --color-neutral-700: #3f3f46;
-  --color-neutral-800: #27272a;
-  --color-neutral-900: #18181b;
-  --color-neutral-950: #09090b;
+  --color-neutral-100: #f8fafc;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
 
-  /* Accent (Monochromatic Graphite / Charcoal Scale) */
-  --color-accent-50: #f4f4f5;
-  --color-accent-100: #e4e4e7;
-  --color-accent-200: #d4d4d8;
-  --color-accent-300: #a1a1aa;
-  --color-accent-400: #71717a;
-  --color-accent-500: #27272a;
-  --color-accent-600: #18181b;
-  --color-accent-700: #09090b;
-  --color-accent-800: #000000;
-  --color-accent-900: #000000;
+  /* Accent (Apollo Vibrant Blue Scale) */
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #104bbf;
+  --color-accent-600: #0d3d9c;
+  --color-accent-700: #0b307d;
+  --color-accent-800: #08245e;
+  --color-accent-900: #1e3a8a;
 
-  /* Success (Monochrome Slate / Dark Graphite) */
-  --color-success-50: #f4f4f5;
-  --color-success-500: #27272a;
-  --color-success-600: #18181b;
+  /* Success (Verified Emerald Green Scale) */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-200: #a7f3d0;
+  --color-success-300: #6ee7b7;
+  --color-success-400: #34d399;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
 
-  /* Warning (Monochrome Medium Charcoal) */
-  --color-warning-50: #fafafa;
-  --color-warning-500: #71717a;
-  --color-warning-600: #52525b;
+  /* Warning (Caution Amber/Yellow Scale) */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
 
-  /* Danger (Monochrome Light Black) */
-  --color-danger-50: #f4f4f5;
-  --color-danger-500: #3f3f46;
-  --color-danger-600: #27272a;
+  /* Danger (Alert Red Scale) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
 
   /* Surface Colors — used through CSS variables for theme switching */
   --color-surface: var(--surface);
@@ -68,40 +80,40 @@
 
 /* ===== Light Theme ===== */
 :root {
-  --body-bg: #ffffff;
+  --body-bg: #f8fafc;
   --surface: #ffffff;
-  --surface-secondary: #fafafa;
-  --surface-tertiary: #f4f4f5;
-  --surface-hover: #f4f4f5;
-  --border-color: #e4e4e7;
-  --border-subtle: #f4f4f5;
-  --text-primary: #09090b;
-  --text-secondary: #52525b;
-  --text-tertiary: #a1a1aa;
+  --surface-secondary: #f1f5f9;
+  --surface-tertiary: #e2e8f0;
+  --surface-hover: #f1f5f9;
+  --border-color: #cbd5e1;
+  --border-subtle: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
   --text-inverse: #ffffff;
-  --sidebar-bg: #f7f7f9;
-  --sidebar-border: #e4e4e7;
-  --sidebar-hover: #efeff1;
-  --sidebar-active: #e4e4e7;
+  --sidebar-bg: #111827; /* Dark sidebar for Apollo */
+  --sidebar-border: #1f2937;
+  --sidebar-hover: #1f2937;
+  --sidebar-active: #104bbf;
 }
 
 /* ===== Dark Theme ===== */
 .dark {
-  --body-bg: #0a0a0c;
-  --surface: #121214;
-  --surface-secondary: #18181b;
-  --surface-tertiary: #27272a;
-  --surface-hover: #27272a;
-  --border-color: #1e1e22;
-  --border-subtle: #161618;
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #52525b;
-  --text-inverse: #0a0a0c;
-  --sidebar-bg: #121214;
-  --sidebar-border: #1e1e22;
-  --sidebar-hover: #18181b;
-  --sidebar-active: #27272a;
+  --body-bg: #090d16;
+  --surface: #0e1524;
+  --surface-secondary: #131c30;
+  --surface-tertiary: #1c2842;
+  --surface-hover: #1c2842;
+  --border-color: #1e293b;
+  --border-subtle: #131c30;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #475569;
+  --text-inverse: #090d16;
+  --sidebar-bg: #0b0f19;
+  --sidebar-border: #141c2f;
+  --sidebar-hover: #141c2f;
+  --sidebar-active: #2472fc;
 }
 
 /* ===== Base Styles ===== */

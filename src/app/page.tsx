@@ -1,22 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { StatusBadge } from "@/components/common/status-badge";
 import Link from "next/link";
 import {
-  Layers,
+  Search,
+  Bot,
+  Sparkles,
+  AlertTriangle,
+  Play,
+  Users,
+  Building,
+  ArrowRight,
+  ExternalLink,
+  Zap,
   Mail,
   MessageSquare,
-  Users,
-  ArrowRight,
-  Search,
-  Clock,
-  Zap,
-  TrendingUp,
-  Inbox,
+  Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StatusBadge } from "@/components/common/status-badge";
 import { Skeleton } from "@/components/common/skeletons";
 
 interface DashboardData {
@@ -53,20 +56,16 @@ interface DashboardData {
   }>;
 }
 
-const stagger = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05 },
-  },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-};
-
 export default function DashboardPage() {
+  const [leadTab, setLeadTab] = useState<"people" | "companies">("people");
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [recs, setRecs] = useState([
+    { id: 1, title: "Add teammates to win deals together", priority: "Important", nextStep: "Start", completed: false },
+    { id: 2, title: "Connect your primary mailbox to activate sequences", priority: "Important", nextStep: "Connect", completed: false },
+    { id: 3, title: "Review pending email drafts in your outbox", priority: "Medium", nextStep: "Review", completed: false },
+    { id: 4, title: "Upload a CSV list to enrich company data", priority: "Low", nextStep: "Upload", completed: false }
+  ]);
+
   const { data, isLoading } = useQuery<DashboardData>({
     queryKey: ["dashboard"],
     queryFn: async () => {
@@ -74,6 +73,15 @@ export default function DashboardPage() {
       if (!res.ok) throw new Error("Failed to fetch dashboard");
       return res.json();
     },
+  });
+
+  const { data: leads } = useQuery<any[]>({
+    queryKey: ["suggested-leads"],
+    queryFn: async () => {
+      const res = await fetch("/api/leads");
+      if (!res.ok) throw new Error("Failed to fetch leads");
+      return res.json();
+    }
   });
 
   if (isLoading) {
@@ -84,182 +92,231 @@ export default function DashboardPage() {
   const recentSessions = data?.recentSessions || [];
   const recentReplies = data?.recentReplies || [];
 
-  return (
-    <motion.div initial="hidden" animate="visible" variants={stagger}>
-      {/* Greeting */}
-      <motion.div variants={fadeUp} className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-          Welcome back
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Here&apos;s your outreach overview
-        </p>
-      </motion.div>
+  const suggestedPeople = (leads || []).slice(0, 4);
+  const suggestedCompanies = Array.from(
+    new Map((leads || []).map((item: any) => [item.companyName, item])).values()
+  ).slice(0, 4);
 
-      {/* Stats Grid */}
-      <motion.div
-        variants={fadeUp}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-      >
+  const handleCompleteRec = (id: number) => {
+    setRecs(prev => prev.map(r => r.id === id ? { ...r, completed: true } : r));
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Top Banner Alert (Credits notification) */}
+      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-sm text-text-primary">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-accent-500" />
+          <span>
+            Your <strong>85 monthly credits</strong> expire in 1 day. Annual plans include 30,000+ credits upfront to use all year.
+          </span>
+        </div>
+        <Link
+          href="/settings"
+          className="px-3 py-1 bg-accent-500 hover:bg-accent-600 text-white text-xs font-semibold rounded-lg transition-colors whitespace-nowrap"
+        >
+          Upgrade Plan
+        </Link>
+      </div>
+
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={Users}
-          label="Total Leads"
+          label="Total Database Leads"
           value={stats?.totalLeads || 0}
         />
         <StatCard
           icon={Mail}
-          label="Emails Sent"
+          label="Sequences Active"
+          value={stats?.activeSessions || 0}
+        />
+        <StatCard
+          icon={Play}
+          label="Total Emails Sent"
           value={stats?.totalEmailsSent || 0}
         />
         <StatCard
-          icon={MessageSquare}
-          label="Replies"
-          value={stats?.totalReplies || 0}
-        />
-        <StatCard
           icon={TrendingUp}
-          label="Reply Rate"
+          label="Reply Rate %"
           value={`${stats?.replyRate || 0}%`}
         />
-      </motion.div>
+      </div>
 
-      {/* Quick Actions */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
-        <Link
-          href="/search"
-          className={cn(
-            "group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-150",
-            "border-border bg-surface hover:bg-surface-hover hover:border-accent-500/30"
+      {/* Recommendations card (Apollo Style) */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-yellow-500" />
+            <h2 className="text-sm font-semibold text-text-primary">Recommendations</h2>
+          </div>
+          <span className="text-[10px] text-accent-500 font-bold px-2 py-0.5 bg-accent-500/10 rounded-full">
+            Active
+          </span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="border-b border-border text-text-tertiary">
+                <th className="pb-2 font-medium">Title</th>
+                <th className="pb-2 font-medium">Priority</th>
+                <th className="pb-2 font-medium">Next Steps</th>
+                <th className="pb-2 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recs.filter(r => !r.completed).map(rec => (
+                <tr key={rec.id} className="border-b border-border/40 hover:bg-surface-secondary/40 transition-colors">
+                  <td className="py-3 text-text-primary font-medium">{rec.title}</td>
+                  <td className="py-3">
+                    <span className={cn(
+                      "px-2 py-0.5 text-[10px] font-bold rounded-full",
+                      rec.priority === "Important" ? "bg-orange-500/10 text-orange-500" :
+                      rec.priority === "Medium" ? "bg-blue-500/10 text-blue-500" : "bg-neutral-500/10 text-neutral-500"
+                    )}>
+                      {rec.priority}
+                    </span>
+                  </td>
+                  <td className="py-3">
+                    <button className="px-2.5 py-1 bg-surface-secondary hover:bg-surface-tertiary border border-border font-medium rounded text-text-primary transition-colors">
+                      {rec.nextStep}
+                    </button>
+                  </td>
+                  <td className="py-3 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => handleCompleteRec(rec.id)}
+                        className="p-1 text-text-tertiary hover:text-success-600 hover:bg-success-500/10 rounded transition-colors"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Suggested leads (Apollo Style) */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-text-primary">Suggested leads</h2>
+          <div className="flex items-center gap-1 bg-surface-secondary p-0.5 rounded-lg border border-border">
+            <button
+              onClick={() => setLeadTab("people")}
+              className={cn(
+                "flex items-center gap-1 px-3 py-1 rounded-md text-xs font-semibold transition-all",
+                leadTab === "people" ? "bg-white text-text-primary shadow-sm" : "text-text-secondary"
+              )}
+            >
+              <Users className="w-3.5 h-3.5" />
+              People
+            </button>
+            <button
+              onClick={() => setLeadTab("companies")}
+              className={cn(
+                "flex items-center gap-1 px-3 py-1 rounded-md text-xs font-semibold transition-all",
+                leadTab === "companies" ? "bg-white text-text-primary shadow-sm" : "text-text-secondary"
+              )}
+            >
+              <Building className="w-3.5 h-3.5" />
+              Companies
+            </button>
+          </div>
+        </div>
+
+        {/* Lead Suggested items container */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {leadTab === "people" ? (
+            suggestedPeople.map((person: any) => (
+              <div key={person.id} className="border border-border/80 rounded-xl p-4 bg-surface hover:border-accent-500/30 transition-all flex flex-col justify-between space-y-3">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-text-primary truncate">{person.contactName}</p>
+                    <span className="px-1.5 py-0.5 bg-success-500/10 text-success-600 text-[8px] font-bold rounded">Verified</span>
+                  </div>
+                  <p className="text-[10px] text-text-secondary truncate">{person.contactTitle}</p>
+                  <p className="text-[10px] text-accent-500 truncate font-semibold">{person.companyName}</p>
+                  <p className="text-[9px] text-text-tertiary truncate">{person.location}</p>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  <button className="flex-1 py-1.5 bg-accent-500/10 hover:bg-accent-500 text-accent-500 hover:text-white text-[10px] font-bold rounded-lg transition-colors border border-accent-500/20">
+                    Reveal Email
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            suggestedCompanies.map((company: any) => (
+              <div key={company.id} className="border border-border/80 rounded-xl p-4 bg-surface hover:border-accent-500/30 transition-all flex flex-col justify-between space-y-3">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-text-primary truncate">{company.companyName}</p>
+                    <ExternalLink className="w-3 h-3 text-text-tertiary" />
+                  </div>
+                  <p className="text-[10px] text-text-secondary truncate">{company.industry}</p>
+                  <p className="text-[9px] text-text-tertiary">Size: {company.companySize} employees</p>
+                  <p className="text-[9px] text-text-tertiary truncate">{company.location}</p>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  <button className="flex-1 py-1.5 bg-accent-500/10 hover:bg-accent-500 text-accent-500 hover:text-white text-[10px] font-bold rounded-lg transition-colors border border-accent-500/20">
+                    Save Company
+                  </button>
+                </div>
+              </div>
+            ))
           )}
-        >
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent-500/10 text-accent-500 group-hover:bg-accent-500/20 transition-colors">
-            <Search className="w-4 h-4" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-text-primary">New Search</p>
-            <p className="text-xs text-text-tertiary">Discover new leads</p>
-          </div>
-        </Link>
+        </div>
+      </div>
 
-        <Link
-          href="/sessions"
-          className={cn(
-            "group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-150",
-            "border-border bg-surface hover:bg-surface-hover hover:border-accent-500/30"
-          )}
-        >
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent-500/10 text-accent-500 group-hover:bg-accent-500/20 transition-colors">
-            <Layers className="w-4 h-4" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-text-primary">Sessions</p>
-            <p className="text-xs text-text-tertiary">
-              {stats?.activeSessions || 0} active
-            </p>
-          </div>
-        </Link>
-
-        {(stats?.pendingReviewCount || 0) > 0 ? (
-          <Link
-            href="/sessions"
-            className={cn(
-              "group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-150",
-              "border-warning-500/30 bg-warning-50/50 hover:bg-warning-50 dark:bg-warning-500/5 dark:hover:bg-warning-500/10"
-            )}
-          >
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-warning-500/10 text-warning-500">
-              <Inbox className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">
-                Review Queue
-              </p>
-              <p className="text-xs text-warning-600 dark:text-warning-500">
-                {stats?.pendingReviewCount} emails pending
-              </p>
-            </div>
-          </Link>
-        ) : (
-          <Link
-            href="/inbox"
-            className={cn(
-              "group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-150",
-              "border-border bg-surface hover:bg-surface-hover hover:border-accent-500/30"
-            )}
-          >
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent-500/10 text-accent-500 group-hover:bg-accent-500/20 transition-colors">
-              <Inbox className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">Inbox</p>
-              <p className="text-xs text-text-tertiary">Check replies</p>
-            </div>
-          </Link>
-        )}
-      </motion.div>
-
-      {/* Two Column Layout */}
+      {/* Two Column Layout (Recent Activity) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Sessions */}
-        <motion.div variants={fadeUp}>
-          <div className="flex items-center justify-between mb-4">
+        {/* Recent Sequences */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-text-primary">
-              Recent Sessions
+              Recent Sequences
             </h2>
             <Link
-              href="/sessions"
+              href="/sequences"
               className="text-xs text-text-tertiary hover:text-accent-500 transition-colors flex items-center gap-1"
             >
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
-          {recentSessions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 border border-dashed border-border rounded-xl">
-              <Zap className="w-8 h-8 text-text-tertiary mb-3" />
-              <p className="text-sm text-text-secondary mb-1">
-                No sessions yet
-              </p>
-              <p className="text-xs text-text-tertiary">
-                Start a search to create your first session
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {recentSessions.map((session) => (
+          <div className="space-y-1.5 bg-surface border border-border p-3 rounded-xl">
+            {recentSessions.length === 0 ? (
+              <div className="text-center py-6 text-xs text-text-tertiary">No sequences yet.</div>
+            ) : (
+              recentSessions.map((session) => (
                 <Link
                   key={session.id}
-                  href={`/sessions/${session.id}`}
-                  className={cn(
-                    "flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg transition-all duration-150",
-                    "hover:bg-surface-hover group"
-                  )}
+                  href={`/sequences/${session.id}`}
+                  className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg hover:bg-surface-secondary transition-colors group"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-text-primary truncate group-hover:text-accent-500 transition-colors">
+                    <p className="text-xs font-semibold text-text-primary truncate group-hover:text-accent-500 transition-colors">
                       {session.name}
                     </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-text-tertiary">
-                        {session._count.leads} leads
-                      </span>
-                      <span className="text-text-tertiary">·</span>
-                      <span className="text-xs text-text-tertiary flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {formatRelativeTime(session.updatedAt)}
-                      </span>
+                    <div className="flex items-center gap-2 mt-0.5 text-[10px] text-text-tertiary">
+                      <span>{session._count.leads} leads</span>
+                      <span>·</span>
+                      <span>Updated {new Date(session.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <StatusBadge status={session.status} />
                 </Link>
-              ))}
-            </div>
-          )}
-        </motion.div>
+              ))
+            )}
+          </div>
+        </div>
 
         {/* Recent Replies */}
-        <motion.div variants={fadeUp}>
-          <div className="flex items-center justify-between mb-4">
+        <div>
+          <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-text-primary">
               Recent Replies
             </h2>
@@ -271,53 +328,41 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          {recentReplies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 border border-dashed border-border rounded-xl">
-              <MessageSquare className="w-8 h-8 text-text-tertiary mb-3" />
-              <p className="text-sm text-text-secondary mb-1">
-                No replies yet
-              </p>
-              <p className="text-xs text-text-tertiary">
-                Replies will appear here once you send emails
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {recentReplies.map((reply) => (
+          <div className="space-y-1.5 bg-surface border border-border p-3 rounded-xl">
+            {recentReplies.length === 0 ? (
+              <div className="text-center py-6 text-xs text-text-tertiary">No replies yet.</div>
+            ) : (
+              recentReplies.map((reply) => (
                 <div
                   key={reply.id}
-                  className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-hover transition-all duration-150"
+                  className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-surface-secondary transition-colors"
                 >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-tertiary shrink-0 mt-0.5">
-                    <span className="text-xs font-medium text-text-secondary">
-                      {(
-                        reply.fromName || reply.fromEmail
-                      )[0].toUpperCase()}
-                    </span>
+                  <div className="flex items-center justify-center w-7 h-7 rounded-full bg-surface-tertiary text-text-secondary text-xs font-bold shrink-0 mt-0.5">
+                    {(reply.fromName || reply.fromEmail)[0].toUpperCase()}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-text-primary truncate">
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-text-primary truncate">
                         {reply.fromName || reply.fromEmail}
                       </p>
                       {reply.classification && (
                         <StatusBadge status={reply.classification} />
                       )}
                     </div>
-                    <p className="text-xs text-text-secondary truncate mt-0.5">
+                    <p className="text-[10px] text-text-secondary truncate">
                       {reply.lead.companyName}
                     </p>
-                    <p className="text-xs text-text-tertiary line-clamp-1 mt-0.5">
-                      {reply.body.slice(0, 100)}
+                    <p className="text-[10px] text-text-tertiary line-clamp-1">
+                      {reply.body}
                     </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -331,12 +376,12 @@ function StatCard({
   value: number | string;
 }) {
   return (
-    <div className="px-4 py-3.5 rounded-xl border border-border bg-surface">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="px-4 py-3.5 rounded-xl border border-border bg-surface shadow-sm">
+      <div className="flex items-center gap-2 mb-1.5">
         <Icon className="w-4 h-4 text-text-tertiary" />
         <span className="text-xs text-text-secondary font-medium">{label}</span>
       </div>
-      <p className="text-2xl font-semibold tracking-tight text-text-primary">
+      <p className="text-2xl font-bold tracking-tight text-text-primary">
         {value}
       </p>
     </div>
@@ -345,23 +390,6 @@ function StatCard({
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-8">
-      {/* Title block */}
-      <div>
-        <Skeleton className="h-8 w-48 mb-2" />
-        <Skeleton className="h-4 w-64" />
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="p-4 border border-border bg-surface rounded-xl space-y-3">
-            <div className="flex gap-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-20" />
-            </div>
-            <Skeleton className="h-8 w-16" />
-          </div>
         ))}
       </div>
 
