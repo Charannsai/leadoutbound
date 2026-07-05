@@ -1,3 +1,4 @@
+// Next.js hot-reload trigger
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
