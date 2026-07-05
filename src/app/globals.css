@@ -94,7 +94,7 @@
   --sidebar-bg: #0f172a;
   --sidebar-border: #1e293b;
   --sidebar-hover: #1e293b;
-  --sidebar-active: #2563eb;
+  --sidebar-active: #104bbf;
 }
 
 /* ===== Dark Theme ===== */
@@ -113,7 +113,7 @@
   --sidebar-bg: #030712;
   --sidebar-border: #111827;
   --sidebar-hover: #111827;
-  --sidebar-active: #2563eb;
+  --sidebar-active: #104bbf;
 }
 
 /* ===== Base Styles ===== */
