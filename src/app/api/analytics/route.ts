@@ -39,6 +39,7 @@ export async function GET() {
     const positiveResponseRate = totalReplies > 0 ? ((positiveReplies / totalReplies) * 100).toFixed(1) : "0.0";
     const bounceRate = totalSent > 0 ? ((bounceReplies / totalSent) * 100).toFixed(1) : "0.0";
 
+    // Map template statistics
     const templatePerformance = templates.map(t => {
       let sent = 0;
       let replies = 0;
